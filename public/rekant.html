@@ -1971,17 +1971,33 @@ let NEWS = [
 
 
 function getProductImg(id) {
-  // Přímý lookup - KM produkty mají správné klíče
+  // Přímý lookup - pokud klíč existuje v P
   if (P[id]) return P[id];
-  // Mapování číselných id na klíče v P
+  // Kompletní mapování všech produktových id na klíče v P
   const MAP = {
+    // Konica Minolta - barevné A3
+    'km-c257i':'km-c257i','km-c251i':'km-c257i','km-c361i':'km-c360i',
+    'km-c451i':'km-c451i','km-c551i':'km-c451i','km-c301i':'km-c257i',
+    'km-c258':'km-c257i',
+    // Konica Minolta - barevné A4
+    'km-c3321i':'km-c3321i','km-c3351i':'km-c3321i','km-c4051i':'km-c3321i','km-c4751i':'km-c3321i',
+    // Konica Minolta - černobílé A4
+    'km-5020i':'km-5000i','km-4751i':'km-5000i','km-4051i':'km-5000i','km-4020i':'km-5000i',
+    // Konica Minolta - černobílé A3
+    'km-301i-bw':'km-227','km-361i-bw':'km-227','km-451i-bw':'km-227',
+    'km-551i-bw':'km-227','km-225i':'km-227','km-185':'km-227',
+    'km-226':'km-227','km-266':'km-227','km-287':'km-227','km-306':'km-227',
+    // Epson
     'ep1':'ep-wfc4810','ep2':'ep-wfc5890','ep3':'ep-wfc4310','ep4':'ep-ecotank',
+    // Brother
     'br1':'br-l8900','br2':'br-l5750','br3':'br-j6945',
+    // Canon
     'can1':'can-ir1643','can2':'can-irdx3730','can3':'can-pixma',
+    // Develop
     'dev1':'dev-ineo287','dev2':'dev-ineo368','dev3':'dev-ineo227'
   };
   if (MAP[id] && P[MAP[id]]) return P[MAP[id]];
-  // Fallback podle značky
+  // Poslední fallback podle značky
   if (id.startsWith('km')) return P['km-c3321i'] || '';
   if (id.startsWith('ep')) return P['ep-wfc4810'] || '';
   if (id.startsWith('br')) return P['br-l8900'] || '';
