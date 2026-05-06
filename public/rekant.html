@@ -1971,9 +1971,16 @@ let NEWS = [
 
 
 function getProductImg(id) {
-  // Přímý lookup - použijeme obrázek ze slovníku P pokud existuje
-  // jinak použijeme generický obrázek podle značky
+  // Přímý lookup - KM produkty mají správné klíče
   if (P[id]) return P[id];
+  // Mapování číselných id na klíče v P
+  const MAP = {
+    'ep1':'ep-wfc4810','ep2':'ep-wfc5890','ep3':'ep-wfc4310','ep4':'ep-ecotank',
+    'br1':'br-l8900','br2':'br-l5750','br3':'br-j6945',
+    'can1':'can-ir1643','can2':'can-irdx3730','can3':'can-pixma',
+    'dev1':'dev-ineo287','dev2':'dev-ineo368','dev3':'dev-ineo227'
+  };
+  if (MAP[id] && P[MAP[id]]) return P[MAP[id]];
   // Fallback podle značky
   if (id.startsWith('km')) return P['km-c3321i'] || '';
   if (id.startsWith('ep')) return P['ep-wfc4810'] || '';
