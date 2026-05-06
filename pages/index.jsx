@@ -1,4 +1,4 @@
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   return {
     redirect: {
       destination: '/rekant.html',
@@ -6,4 +6,7 @@ export async function getServerSideProps(context) {
     },
   }
 }
-export default function Home() { return null; }
+
+export default function Home() {
+  return null;
+}
