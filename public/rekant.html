@@ -1620,7 +1620,7 @@ const P={"km-c3321i":"data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDE2
 
 <script>
 // ─── INIT ───
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('logo-main').src = L.rekant;
   document.getElementById('logo-foot').src = L.rekant;
   ['hc-km','split-km','km-page-logo'].forEach(id => { const e=document.getElementById(id); if(e) e.src=L.minolta; });
@@ -1638,7 +1638,7 @@ window.onload = () => {
   updateCmsBars();
   // Inicializujeme captcha pro výchozí panel
   setTimeout(() => initFormCaptcha('servis'), 100);
-};
+});
 
 // ─── NAV ───
 function nav(id, btn) {
@@ -2137,7 +2137,14 @@ function initFormCaptcha(formId) {
   formCaptchas[formId] = {q: a+' + '+b+' =', ans: a+b, verified: false};
   const box = document.getElementById('cap-'+formId);
   if(box) {
-    box.innerHTML = '<div style="font-size:12px;font-weight:700;color:var(--g800);margin-bottom:9px">🔢 Ověření proti spamu — vyřešte příklad:</div><div class="cq"><div class="cq-q">'+formCaptchas[formId].q+'</div><input class="cq-i" type="number" id="cap-inp-'+formId+'" placeholder="?" onkeydown="if(event.key==='Enter')verifyCap(''+formId+'')"><button class="cq-btn" onclick="verifyCap(''+formId+'')">OK</button></div><div id="cap-msg-'+formId+'" style="margin-top:6px;font-size:12.5px;color:var(--red)"></div>';
+    const capId = formId;
+    box.innerHTML = '<div style="font-size:12px;font-weight:700;color:var(--g800);margin-bottom:9px">🔢 Ověření proti spamu — vyřešte příklad:</div><div class="cq"><div class="cq-q">' + formCaptchas[formId].q + '</div><input class="cq-i" type="number" id="cap-inp-' + formId + '" placeholder="?"><button class="cq-btn" id="cap-btn-' + formId + '">OK</button></div><div id="cap-msg-' + formId + '" style="margin-top:6px;font-size:12.5px;color:var(--red)"></div>';
+    setTimeout(function() {
+      var inp = document.getElementById('cap-inp-' + capId);
+      var btn = document.getElementById('cap-btn-' + capId);
+      if(inp) inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') verifyCap(capId); });
+      if(btn) btn.addEventListener('click', function(){ verifyCap(capId); });
+    }, 0);
   }
 }
 
