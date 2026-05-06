@@ -1971,15 +1971,16 @@ let NEWS = [
 
 
 function getProductImg(id) {
-  const map = {
-    'km1':'km-c3321i','km2':'km-c257i','km3':'km-c360i',
-    'km4':'km-c451i','km5':'km-227','km6':'km-5000i',
-    'ep1':'ep-wfc4810','ep2':'ep-wfc5890','ep3':'ep-wfc4310','ep4':'ep-ecotank',
-    'br1':'br-l8900','br2':'br-l5750','br3':'br-j6945',
-    'can1':'can-ir1643','can2':'can-irdx3730','can3':'can-pixma',
-    'dev1':'dev-ineo287','dev2':'dev-ineo368','dev3':'dev-ineo227',
-  };
-  return P[map[id]] || P['km-c3321i'];
+  // Přímý lookup - použijeme obrázek ze slovníku P pokud existuje
+  // jinak použijeme generický obrázek podle značky
+  if (P[id]) return P[id];
+  // Fallback podle značky
+  if (id.startsWith('km')) return P['km-c3321i'] || '';
+  if (id.startsWith('ep')) return P['ep-wfc4810'] || '';
+  if (id.startsWith('br')) return P['br-l8900'] || '';
+  if (id.startsWith('can')) return P['can-ir1643'] || '';
+  if (id.startsWith('dev')) return P['dev-ineo287'] || '';
+  return '';
 }
 // ─── PRODUCT CARD ───
 function pcard(p, brandLogo) {
