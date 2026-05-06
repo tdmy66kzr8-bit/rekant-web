@@ -1596,6 +1596,29 @@ const P={"km-c3321i":"data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDE2
   </div>
 </div>
 
+<!-- ARTICLE DETAIL MODAL -->
+<div class="modal-ov" id="article-ov" onclick="if(event.target===this)closeArticle()">
+  <div class="modal-box" style="max-width:720px;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:12px">
+      <div>
+        <span id="art-badge" style="display:inline-block;font-size:11px;font-weight:800;padding:3px 10px;border-radius:4px;color:#fff;margin-bottom:10px"></span>
+        <h2 id="art-title" style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:var(--navy);line-height:1.2;margin-bottom:6px"></h2>
+        <div style="display:flex;gap:14px;font-size:12.5px;color:var(--g400)">
+          <span id="art-date"></span>
+          <span id="art-author"></span>
+        </div>
+      </div>
+      <button onclick="closeArticle()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--g400);flex-shrink:0">✕</button>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--g100);margin-bottom:20px">
+    <p id="art-perex" style="font-size:16px;font-weight:600;color:var(--navy);line-height:1.6;margin-bottom:18px"></p>
+    <div id="art-body" style="font-size:14.5px;color:var(--g600);line-height:1.75;white-space:pre-wrap"></div>
+    <div style="margin-top:28px;text-align:right">
+      <button onclick="closeArticle()" class="btn-primary" style="padding:10px 24px">Zavřít</button>
+    </div>
+  </div>
+</div>
+
 <!-- CMS EDITOR -->
 <div class="modal-ov editor-box" id="editor-ov" style="align-items:flex-start;overflow-y:auto">
   <div class="modal-box" style="max-width:660px;max-height:92vh;overflow-y:auto;margin-top:8px">
@@ -1963,11 +1986,14 @@ const DEV = [
    buy:'Poptejte cenu',rent:'od 390 Kč/měs'},
 ];
 
-let NEWS = [
+const NEWS_DEFAULT=[
   {id:1,title:'Nová řada Konica Minolta bizhub i-Series – nyní u Rekant',date:'2026-03-15',cat:'Novinka',author:'Rekant dispečink',perex:'Uvádíme nejnovější generaci multifunkcí bizhub i-Series s pokročilým zabezpečením.',body:'Konica Minolta spustila novou generaci bizhub i-Series. Dostupné u Rekant — prodej, pronájem, servis.'},
   {id:2,title:'Jablotron 100+ – jarní akce: 15 % sleva na instalaci',date:'2026-03-01',cat:'Akce',author:'Jan Honc',perex:'Do konce dubna 15 % sleva na instalaci alarmového systému Jablotron 100+.',body:'Sleva 15 % na instalační práce. Pro nové zákazníky do 30. dubna 2026.'},
   {id:3,title:'Epson WorkForce Pro – ušetřete až 50 % nákladů na tisk',date:'2026-02-20',cat:'Tip',author:'Rekant tým',perex:'Inkoustová tiskárna Epson WorkForce Pro může ušetřit až 50 % oproti laserovým strojům.',body:'Nižší náklady na stránku, žádné zahřívání, velkokapacitní inkousty.'},
 ];
+function newsLoad(){try{const s=localStorage.getItem('rekant_news');return s?JSON.parse(s):NEWS_DEFAULT;}catch(e){return NEWS_DEFAULT;}}
+function newsSave(){try{localStorage.setItem('rekant_news',JSON.stringify(NEWS));}catch(e){}}
+let NEWS=newsLoad();
 
 
 function getProductImg(id) {
@@ -2089,7 +2115,7 @@ function newsCard(n, ed) {
     <p style="font-size:13.5px;color:var(--g600);line-height:1.65;flex:1">${n.perex}</p>
     <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--g100);padding-top:10px">
       <span style="font-size:12px;color:var(--g400)">👤 ${n.author}</span>
-      <button class="btn-outline" style="padding:5px 12px;font-size:12px">Číst →</button>
+      <button class="btn-outline" style="padding:5px 12px;font-size:12px" onclick="openArticle(${n.id})">Číst →</button>
     </div>
   </div>`;
 }
@@ -2304,7 +2330,7 @@ function saveArt() {
   if(!t||!p){alert('Vyplňte název a perex.');return;}
   const a={id:editId||Date.now(),title:t,perex:p,body:document.getElementById('e-body').value,cat:document.getElementById('e-cat').value,date:document.getElementById('e-date').value,author:document.getElementById('e-author').value};
   NEWS=editId?NEWS.map(n=>n.id===editId?a:n):[a,...NEWS];
-  closeEditor();renderNewsAll();renderNewsPreview();
+  newsSave();closeEditor();renderNewsAll();renderNewsPreview();
 }
 
 // ═══════════════════════════════════════════════
@@ -2506,7 +2532,19 @@ function deleteMachine(id) {
 const origOpenMachine = openMachineEditor;
 
 function editArt(id){openEditor(NEWS.find(n=>n.id===id));}
-function delArt(id){if(confirm('Smazat?')){NEWS=NEWS.filter(n=>n.id!==id);renderNewsAll();renderNewsPreview();}}
+function delArt(id){if(confirm('Smazat?')){NEWS=NEWS.filter(n=>n.id!==id);newsSave();renderNewsAll();renderNewsPreview();}}
+function openArticle(id){
+  const n=NEWS.find(a=>a.id===id);if(!n)return;
+  document.getElementById('art-badge').textContent=n.cat;
+  document.getElementById('art-badge').style.background=badgeCol(n.cat);
+  document.getElementById('art-title').textContent=n.title;
+  document.getElementById('art-date').textContent='📅 '+n.date;
+  document.getElementById('art-author').textContent='👤 '+n.author;
+  document.getElementById('art-perex').textContent=n.perex;
+  document.getElementById('art-body').textContent=n.body||'';
+  document.getElementById('article-ov').classList.add('open');
+}
+function closeArticle(){document.getElementById('article-ov').classList.remove('open');}
 </script>
 </body>
 </html>
