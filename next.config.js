@@ -4,42 +4,42 @@ const nextConfig = {
     return [
       {
         source: '/kontakt',
-        destination: '/rekant.html#kontakt',
+        destination: '/#kontakt',
         permanent: true,
       },
       {
         source: '/kontakt/',
-        destination: '/rekant.html#kontakt',
+        destination: '/#kontakt',
         permanent: true,
       },
       {
         source: '/sluzby-servis',
-        destination: '/rekant.html',
+        destination: '/',
         permanent: true,
       },
       {
         source: '/sluzby-servis/',
-        destination: '/rekant.html',
+        destination: '/',
         permanent: true,
       },
       {
-        source: '/produkty',
-        destination: '/rekant.html#katalog',
-        permanent: true,
-      },
-      {
-        source: '/produkty/',
-        destination: '/rekant.html#katalog',
-        permanent: true,
-      },
+  	source: '/produkty',
+  	destination: '/rekant.html#katalog',
+  	permanent: true,
+	},
+	{
+  	source: '/produkty/',
+  	destination: '/rekant.html#katalog',
+  	permanent: true,
+	},
       {
         source: '/reference',
-        destination: '/rekant.html',
+        destination: '/',
         permanent: true,
       },
       {
         source: '/reference/',
-        destination: '/rekant.html',
+        destination: '/',
         permanent: true,
       },
     ]
