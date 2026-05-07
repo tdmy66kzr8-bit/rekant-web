@@ -329,6 +329,7 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
       <button class="nav-btn on" onclick="nav('home',this)">Úvod</button>
       <button class="nav-btn" onclick="nav('news',this)">Novinky & akce</button>
       <button class="nav-btn" onclick="nav('stroje',this)">Katalog strojů</button>
+      <button class="nav-btn" onclick="nav('used',this)">Použité stroje</button>
       <button class="nav-btn" onclick="nav('security',this)">Zabezpečení</button>
       <button class="nav-btn" onclick="nav('contact',this)">Kontakt</button>
     </nav>
@@ -341,6 +342,7 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
     <button class="mob-lnk on" onclick="nav('home',this);toggleMob()">Úvod</button>
     <button class="mob-lnk" onclick="nav('news',this);toggleMob()">Novinky & akce</button>
     <button class="mob-lnk" onclick="nav('stroje',this);toggleMob()">Katalog strojů</button>
+    <button class="mob-lnk" onclick="nav('used',this);toggleMob()">Použité stroje</button>
     <button class="mob-lnk" onclick="nav('security',this);toggleMob()">Zabezpečení</button>
     <button class="mob-lnk" onclick="nav('contact',this);toggleMob()">Kontakt</button>
     <div style="padding:12px 16px;border-top:1px solid var(--bl)">
@@ -977,12 +979,128 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
   </div>
 </div>
 
+<!-- ══ POUŽITÉ STROJE ══ -->
+<div id="pg-used" style="display:none;padding:56px 20px">
+  <div class="inner">
+    <!-- Intro -->
+    <div style="margin-bottom:36px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="display:inline-block;width:32px;height:3px;background:var(--red)"></span>
+        <span style="font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--red);text-transform:uppercase">Výhodná nabídka</span>
+      </div>
+      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5vw,44px);font-weight:900;color:var(--navy);margin-bottom:16px">Levné použité stroje</h1>
+      <div style="max-width:720px;font-size:15px;color:var(--g600);line-height:1.7">
+        <p style="margin-bottom:10px">Nabízíme stroje z ukončených krátkodobých pronájmů — plně funkční zařízení v dobrém stavu za výrazně nižší cenu než nové. Každý stroj prochází naší servisní kontrolou.</p>
+        <p>Jde o mix různých značek a modelů — tiskárny, multifunkce, kopírky. Zásoby se průběžně mění. Pokud hledáte konkrétní typ, neváhejte nás kontaktovat.</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+        <span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#15803d;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #bbf7d0">✓ Servisně zkontrolováno</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #bfdbfe">✓ Záruka 6 měsíců</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;background:#fff7ed;color:#c2410c;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #fed7aa">✓ Servis zajišťujeme</span>
+      </div>
+    </div>
+
+    <!-- Přihlásit se (správce) -->
+    <div id="used-login-bar" style="background:#f8fafc;border:1px solid var(--bl);border-radius:10px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--g600)">
+        <span style="font-size:20px">🔒</span>
+        <span><strong style="color:var(--navy)">Jste správce webu?</strong> Přihlaste se pro správu nabídky použitých strojů.</span>
+      </div>
+      <button onclick="openUsedLogin()" class="btn-primary" style="padding:8px 20px;font-size:13px">Přihlásit se</button>
+    </div>
+    <div id="used-admin-bar" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px 20px;margin-bottom:28px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <span style="font-size:13.5px;color:#92400e;font-weight:600">🔓 Režim správce — správa použitých strojů</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="openUsedEditor(null)" class="btn-primary" style="padding:8px 18px;font-size:13px">+ Přidat stroj</button>
+        <button onclick="exportUsedJSON()" style="padding:8px 18px;font-size:13px;background:#fff;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:var(--navy)">⬇ Export JSON</button>
+        <button onclick="usedLogout()" style="padding:8px 18px;font-size:13px;background:#fff;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:var(--g600)">Odhlásit</button>
+      </div>
+    </div>
+
+    <!-- Grid použitých strojů -->
+    <div id="used-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px"></div>
+    <div id="used-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--g400)">
+      <div style="font-size:48px;margin-bottom:16px">🖨️</div>
+      <p style="font-size:16px;font-weight:600;color:var(--navy);margin-bottom:8px">Momentálně žádné stroje</p>
+      <p style="font-size:14px">Nabídka se průběžně mění. Kontaktujte nás pro aktuální dostupnost.</p>
+      <button onclick="nav('contact')" class="btn-primary" style="margin-top:20px">Kontaktovat nás</button>
+    </div>
+  </div>
+</div>
+
+<!-- USED EDITOR MODAL -->
+<div class="modal-ov" id="used-editor-ov" onclick="if(event.target===this)closeUsedEditor()">
+  <div class="modal-box" style="max-width:640px;max-height:92vh;overflow-y:auto;margin-top:8px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--navy)" id="used-editor-title">Přidat použitý stroj</h3>
+      <button onclick="closeUsedEditor()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--g400)">✕</button>
+    </div>
+    <div style="display:grid;gap:14px">
+      <div>
+        <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:5px">Název stroje *</label>
+        <input id="ue-name" type="text" placeholder="např. Konica Minolta bizhub C360i" style="width:100%;padding:9px 12px;border:1px solid var(--bl);border-radius:7px;font-size:14px;font-family:var(--font);box-sizing:border-box">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:5px">Značka</label>
+          <select id="ue-brand" style="width:100%;padding:9px 12px;border:1px solid var(--bl);border-radius:7px;font-size:14px;font-family:var(--font)">
+            <option>Konica Minolta</option><option>Epson</option><option>Brother</option>
+            <option>Canon</option><option>Develop</option><option>Ricoh</option>
+            <option>Kyocera</option><option>Xerox</option><option>HP</option><option>Jiná</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:5px">Stav</label>
+          <select id="ue-condition" style="width:100%;padding:9px 12px;border:1px solid var(--bl);border-radius:7px;font-size:14px;font-family:var(--font)">
+            <option>Výborný</option><option>Dobrý</option><option>Dobrý s drobnými oděrky</option><option>Použitý</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:5px">Popis</label>
+        <textarea id="ue-desc" rows="3" placeholder="Krátký popis stroje, co umí, vhodné pro..." style="width:100%;padding:9px 12px;border:1px solid var(--bl);border-radius:7px;font-size:14px;font-family:var(--font);resize:vertical;box-sizing:border-box"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:5px">Počet kopií ČB</label>
+          <input id="ue-copies-bw" type="text" placeholder="např. 120 000" style="width:100%;padding:9px 12px;border:1px solid var(--bl);border-radius:7px;font-size:14px;font-family:var(--font);box-sizing:border-box">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:5px">Počet kopií Color</label>
+          <input id="ue-copies-color" type="text" placeholder="jen u barevných strojů" style="width:100%;padding:9px 12px;border:1px solid var(--bl);border-radius:7px;font-size:14px;font-family:var(--font);box-sizing:border-box">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:5px">Prodejní cena *</label>
+          <input id="ue-price" type="text" placeholder="např. od 8 900 Kč" style="width:100%;padding:9px 12px;border:1px solid var(--bl);border-radius:7px;font-size:14px;font-family:var(--font);box-sizing:border-box">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:5px">Cena pronájmu</label>
+          <input id="ue-rent" type="text" placeholder="např. od 290 Kč/měs" style="width:100%;padding:9px 12px;border:1px solid var(--bl);border-radius:7px;font-size:14px;font-family:var(--font);box-sizing:border-box">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:5px">URL obrázku (volitelné)</label>
+        <input id="ue-img" type="text" placeholder="/img/machines/km-c360i.png nebo https://..." style="width:100%;padding:9px 12px;border:1px solid var(--bl);border-radius:7px;font-size:14px;font-family:var(--font);box-sizing:border-box">
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:22px">
+      <button onclick="closeUsedEditor()" style="padding:10px 20px;background:#fff;border:1px solid var(--bl);border-radius:7px;cursor:pointer;font-family:var(--font);font-weight:600;color:var(--g600)">Zrušit</button>
+      <button onclick="saveUsed()" class="btn-primary" style="padding:10px 24px">Uložit stroj</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ AKTUALITY ══ -->
 <div id="pg-news" style="display:none;padding:56px 20px">
   <div class="inner">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px">
       <div><div class="sec-eye">Redakce</div><h1 class="sec-h">Aktuality & novinky</h1></div>
-      <button onclick="openCms()" class="btn-red" id="add-btn">✏️ Přidat článek</button>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button onclick="exportNewsJSON()" id="export-news-btn" style="display:none;padding:8px 16px;font-size:13px;background:#fff;border:1px solid var(--bl);border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:var(--navy)">⬇ Export JSON</button>
+        <button onclick="openCms()" class="btn-red" id="add-btn">✏️ Přidat článek</button>
+      </div>
     </div>
     <div class="news-grid" id="news-all"></div>
     <div id="cms-hint" style="margin-top:28px;padding:18px 22px;background:var(--g50);border:1px solid var(--bl);border-radius:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
@@ -1471,6 +1589,7 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
         <h5>Nabídka</h5>
         <a onclick="nav('km')">Konica Minolta bizhub</a>
         <a onclick="nav('epson')">Epson WorkForce</a>
+        <a onclick="nav('used')" style="color:#fca5a5;font-weight:700">🏷 Použité stroje</a>
         <a onclick="nav('jablotron')">Alarm Jablotron</a>
         <a onclick="nav('dahua')">Kamery Dahua</a>
         <a onclick="nav('hikvision')">Kamery Hikvision</a>
@@ -1654,7 +1773,7 @@ document.addEventListener("DOMContentLoaded", function() {
   ['dev-page-logo'].forEach(id => { const e=document.getElementById(id); if(e) e.src=L.develop; });
   ['hik-logo'].forEach(id => { const e=document.getElementById(id); if(e) e.src=L.hikvision; });
   const cam = document.getElementById('hc-cam'); if(cam) cam.src=L.dahuaCam;
-  renderBrands(); renderNewsPreview(); renderNewsAll();
+  renderBrands(); renderNewsPreview(); renderNewsAll(); renderUsed();
   renderKmAll(); renderEpAll(); renderBrAll(); renderCanAll(); renderDevAll();
   renderSecCards(); initCmsM();
   updateCmsBars();
@@ -2359,6 +2478,9 @@ function updateCmsBars() {
   });
   const hint = document.getElementById('cms-hint');
   if(hint) hint.style.display = a ? 'none' : 'flex';
+  const exportBtn = document.getElementById('export-news-btn');
+  if(exportBtn) exportBtn.style.display = a ? 'inline-block' : 'none';
+  document.getElementById('add-btn').textContent = a ? '✏️ Přidat článek' : '🔐 Přidat článek';
 }
 
 function renderAll() {
@@ -2538,6 +2660,133 @@ function editArt(id){openEditor(NEWS.find(n=>n.id===id));}
 function delArt(id){if(confirm('Smazat?')){NEWS=NEWS.filter(n=>n.id!==id);newsSave();renderNewsAll();renderNewsPreview();}}
 function openArticle(id){const n=NEWS.find(a=>a.id===id);if(!n)return;document.getElementById('art-badge').textContent=n.cat;document.getElementById('art-badge').style.background=badgeCol(n.cat);document.getElementById('art-title').textContent=n.title;document.getElementById('art-date').textContent='📅 '+n.date;document.getElementById('art-author').textContent='👤 '+n.author;document.getElementById('art-perex').textContent=n.perex;document.getElementById('art-body').textContent=n.body||'';document.getElementById('article-ov').classList.add('open');}
 function closeArticle(){document.getElementById('article-ov').classList.remove('open');}
+
+// Export článků do JSON
+function exportNewsJSON(){
+  const blob=new Blob([JSON.stringify(NEWS,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='news.json';a.click();
+}
+
+// ═══════════════════════════════════════════════
+// POUŽITÉ STROJE
+// ═══════════════════════════════════════════════
+const USED_DEFAULT=[];
+function usedLoad(){try{const s=localStorage.getItem('rekant_used');return s?JSON.parse(s):USED_DEFAULT;}catch(e){return USED_DEFAULT;}}
+function usedSave(){try{localStorage.setItem('rekant_used',JSON.stringify(USED));}catch(e){}}
+let USED=usedLoad();
+let usedEditId=null;
+let usedLoggedIn=false;
+
+const USED_PASS='Rekant2026!';
+
+function openUsedLogin(){
+  const p=prompt('Heslo správce:');
+  if(p===USED_PASS){
+    usedLoggedIn=true;
+    document.getElementById('used-login-bar').style.display='none';
+    const ab=document.getElementById('used-admin-bar');
+    ab.style.display='flex';
+    renderUsed();
+  } else if(p!==null){
+    alert('Nesprávné heslo.');
+  }
+}
+function usedLogout(){
+  usedLoggedIn=false;
+  document.getElementById('used-login-bar').style.display='flex';
+  document.getElementById('used-admin-bar').style.display='none';
+  renderUsed();
+}
+
+function conditionColor(c){
+  if(c==='Výborný') return '#15803d';
+  if(c==='Dobrý') return '#1d4ed8';
+  if(c==='Dobrý s drobnými oděrky') return '#b45309';
+  return '#6b7280';
+}
+
+function usedCard(u){
+  const img=u.img?`<img src="${u.img}" alt="${u.name}" style="max-height:130px;max-width:80%;object-fit:contain;display:block;margin:0 auto">`
+    :`<div style="font-size:48px;text-align:center;line-height:130px">🖨️</div>`;
+  const adminBtns=usedLoggedIn?`<div style="display:flex;gap:6px;margin-top:10px">
+    <button onclick="openUsedEditor(${u.id})" style="flex:1;padding:7px;font-size:12px;background:#f1f5f9;border:none;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600">✏️ Editovat</button>
+    <button onclick="delUsed(${u.id})" style="flex:1;padding:7px;font-size:12px;background:#fef2f2;border:none;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:#dc2626">🗑 Smazat</button>
+  </div>`:'';
+  const copies=[];
+  if(u.copiesBw) copies.push(`<span style="font-size:11.5px;color:var(--g500)">ČB: <strong>${u.copiesBw}</strong></span>`);
+  if(u.copiesColor) copies.push(`<span style="font-size:11.5px;color:var(--g500)">Color: <strong>${u.copiesColor}</strong></span>`);
+  return `<div style="background:#fff;border:1.5px solid var(--bl);border-radius:14px;overflow:hidden;display:flex;flex-direction:column">
+    <div style="background:linear-gradient(135deg,#e8f0fe,#dbeafe);padding:20px 16px;min-height:160px;display:flex;align-items:center;justify-content:center;position:relative">
+      <span style="position:absolute;top:10px;left:10px;font-size:10.5px;font-weight:800;background:${conditionColor(u.condition)};color:#fff;padding:3px 9px;border-radius:4px">${u.condition||'Dobrý'}</span>
+      <span style="position:absolute;top:10px;right:10px;font-size:10.5px;font-weight:700;color:var(--g500);background:rgba(255,255,255,.7);padding:3px 9px;border-radius:4px">${u.brand}</span>
+      ${img}
+    </div>
+    <div style="padding:16px;flex:1;display:flex;flex-direction:column">
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--navy);margin-bottom:4px">${u.name}</h3>
+      ${u.desc?`<p style="font-size:13px;color:var(--g600);line-height:1.5;margin-bottom:10px">${u.desc}</p>`:''}
+      ${copies.length?`<div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap">${copies.join('')}</div>`:''}
+      <div style="margin-top:auto;padding-top:12px;border-top:1px solid var(--bl)">
+        <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <span style="font-size:20px;font-weight:900;color:var(--red)">${u.price}</span>
+          ${u.rent?`<span style="font-size:12.5px;color:var(--g500)">Pronájem ${u.rent}</span>`:''}
+        </div>
+        <button onclick="openQuote({model:'${u.name}',id:'used-${u.id}'})" class="btn-primary" style="width:100%;padding:10px">📋 Poptávka</button>
+      </div>
+      ${adminBtns}
+    </div>
+  </div>`;
+}
+
+function renderUsed(){
+  const grid=document.getElementById('used-grid');
+  const empty=document.getElementById('used-empty');
+  if(!USED.length){grid.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  grid.innerHTML=USED.map(u=>usedCard(u)).join('');
+}
+
+function openUsedEditor(id){
+  usedEditId=id;
+  const u=id?USED.find(x=>x.id===id):null;
+  document.getElementById('used-editor-title').textContent=u?'Editovat stroj':'Přidat použitý stroj';
+  document.getElementById('ue-name').value=u?u.name:'';
+  document.getElementById('ue-brand').value=u?u.brand:'Konica Minolta';
+  document.getElementById('ue-condition').value=u?u.condition:'Dobrý';
+  document.getElementById('ue-desc').value=u?u.desc:'';
+  document.getElementById('ue-copies-bw').value=u?u.copiesBw:'';
+  document.getElementById('ue-copies-color').value=u?u.copiesColor:'';
+  document.getElementById('ue-price').value=u?u.price:'';
+  document.getElementById('ue-rent').value=u?u.rent:'';
+  document.getElementById('ue-img').value=u?u.img:'';
+  document.getElementById('used-editor-ov').classList.add('open');
+}
+function closeUsedEditor(){document.getElementById('used-editor-ov').classList.remove('open');}
+
+function saveUsed(){
+  const name=document.getElementById('ue-name').value.trim();
+  const price=document.getElementById('ue-price').value.trim();
+  if(!name||!price){alert('Vyplňte název a cenu.');return;}
+  const u={
+    id:usedEditId||Date.now(),
+    name,brand:document.getElementById('ue-brand').value,
+    condition:document.getElementById('ue-condition').value,
+    desc:document.getElementById('ue-desc').value,
+    copiesBw:document.getElementById('ue-copies-bw').value,
+    copiesColor:document.getElementById('ue-copies-color').value,
+    price,rent:document.getElementById('ue-rent').value,
+    img:document.getElementById('ue-img').value,
+  };
+  USED=usedEditId?USED.map(x=>x.id===usedEditId?u:x):[u,...USED];
+  usedSave();closeUsedEditor();renderUsed();
+}
+function delUsed(id){if(confirm('Smazat stroj?')){USED=USED.filter(x=>x.id!==id);usedSave();renderUsed();}}
+
+function exportUsedJSON(){
+  const blob=new Blob([JSON.stringify(USED,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='used-machines.json';a.click();
+}
 </script>
 </body>
 </html>
