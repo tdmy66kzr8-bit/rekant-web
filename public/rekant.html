@@ -1998,24 +1998,36 @@ let NEWS=newsLoad();
 function getProductImg(id) {
   if (P[id]) return P[id];
   const MAP = {
-    'km-c257i':'km-c257i','km-c251i':'km-c257i',
-    'km-c361i':'km-c360i','km-c451i':'km-c451i','km-c551i':'km-c551i',
-    'km-c301i':'km-c301i','km-c258':'km-c257i',
+    // Barevné A3 — mapování na existující soubory
+    'km-c257i':'km-c251i','km-c251i':'km-c251i',
+    'km-c361i':'km-c360i','km-c360i':'km-c360i',
+    'km-c451i':'km-c451i','km-c551i':'km-c551i',
+    'km-c301i':'km-c301i','km-c258':'km-c258',
+    // Barevné A4
     'km-c3321i':'km-c3321i','km-c3351i':'km-c3351i',
     'km-c4051i':'km-c4051i','km-c4751i':'km-c4751i',
+    // Černobílé A4
     'km-5020i':'km-5020i','km-4751i':'km-4751i',
     'km-4051i':'km-4051i','km-4020i':'km-4020i',
+    // Černobílé A3
     'km-301i-bw':'km-301i-bw','km-361i-bw':'km-361i-bw',
     'km-451i-bw':'km-451i-bw','km-551i-bw':'km-551i-bw',
-    'km-225i':'km-225i','km-185':'km-227',
-    'km-226':'km-227','km-266':'km-227','km-287':'km-227','km-306':'km-227',
+    'km-225i':'km-225i',
+    'km-185':'km-185','km-226':'km-226','km-266':'km-266',
+    'km-287':'km-287','km-306':'km-306',
+    'km-227':'km-266',  // km-227 nemá soubor → nejpodobnější km-266
+    // Epson
     'ep1':'ep-wfc4810','ep2':'ep-wfc5890','ep3':'ep-wfc4310','ep4':'ep-ecotank',
+    // Brother
     'br1':'br-l8900','br2':'br-l5750','br3':'br-j6945',
+    // Canon
     'can1':'can-ir1643','can2':'can-irdx3730','can3':'can-pixma',
+    // Develop
     'dev1':'dev-ineo287','dev2':'dev-ineo368','dev3':'dev-ineo227'
   };
-  if (MAP[id] && P[MAP[id]]) return P[MAP[id]];
-  if (id.startsWith('km')) return P['km-c3321i'] || '';
+  if (MAP[id]) return `/img/machines/${MAP[id]}.png`;
+  if (id.startsWith('km')) return '/img/machines/km-c3321i.png';
+  if (P[id]) return P[id];
   if (id.startsWith('ep')) return P['ep-wfc4810'] || '';
   if (id.startsWith('br')) return P['br-l8900'] || '';
   if (id.startsWith('can')) return P['can-ir1643'] || '';
