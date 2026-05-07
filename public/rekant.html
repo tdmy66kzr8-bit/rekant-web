@@ -1000,15 +1000,8 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
       </div>
     </div>
 
-    <!-- Přihlásit se (správce) -->
-    <div id="used-login-bar" style="background:#f8fafc;border:1px solid var(--bl);border-radius:10px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:12px;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--g600)">
-        <span style="font-size:20px">🔒</span>
-        <span><strong style="color:var(--navy)">Jste správce webu?</strong> Přihlaste se pro správu nabídky použitých strojů.</span>
-      </div>
-      <button onclick="openUsedLogin()" class="btn-primary" style="padding:8px 20px;font-size:13px">Přihlásit se</button>
-    </div>
-    <div id="used-admin-bar" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px 20px;margin-bottom:28px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <!-- Admin bar (viditelný po přihlášení) -->
+    <div id="used-admin-bar" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px 20px;margin-bottom:28px;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
       <span style="font-size:13.5px;color:#92400e;font-weight:600">🔓 Režim správce — správa použitých strojů</span>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button onclick="openUsedEditor(null)" class="btn-primary" style="padding:8px 18px;font-size:13px">+ Přidat stroj</button>
@@ -1024,6 +1017,13 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
       <p style="font-size:16px;font-weight:600;color:var(--navy);margin-bottom:8px">Momentálně žádné stroje</p>
       <p style="font-size:14px">Nabídka se průběžně mění. Kontaktujte nás pro aktuální dostupnost.</p>
       <button onclick="nav('contact')" class="btn-primary" style="margin-top:20px">Kontaktovat nás</button>
+    </div>
+
+    <!-- Přihlásit se (správce) — nenápadně dole -->
+    <div id="used-login-bar" style="margin-top:40px;padding:18px 22px;background:var(--g50);border:1px solid var(--bl);border-radius:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <span style="font-size:22px">🔐</span>
+      <div style="flex:1"><div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:2px">Jste správce webu?</div><div style="font-size:13px;color:var(--g600)">Přihlaste se pro správu nabídky použitých strojů.</div></div>
+      <button onclick="openUsedLogin()" class="btn-red">Přihlásit se</button>
     </div>
   </div>
 </div>
@@ -1773,12 +1773,32 @@ document.addEventListener("DOMContentLoaded", function() {
   ['dev-page-logo'].forEach(id => { const e=document.getElementById(id); if(e) e.src=L.develop; });
   ['hik-logo'].forEach(id => { const e=document.getElementById(id); if(e) e.src=L.hikvision; });
   const cam = document.getElementById('hc-cam'); if(cam) cam.src=L.dahuaCam;
-  renderBrands(); renderNewsPreview(); renderNewsAll(); renderUsed();
-  renderKmAll(); renderEpAll(); renderBrAll(); renderCanAll(); renderDevAll();
-  renderSecCards(); initCmsM();
-  updateCmsBars();
-  // Inicializujeme captcha pro výchozí panel
-  setTimeout(() => initFormCaptcha('servis'), 100);
+
+  // Načti data ze serveru (JSON soubory) — přepíší localStorage pokud existují
+  Promise.allSettled([
+    fetch('/data/news.json').then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch('/data/used-machines.json').then(r=>r.ok?r.json():null).catch(()=>null),
+  ]).then(([newsRes, usedRes]) => {
+    if(newsRes.value && Array.isArray(newsRes.value)){
+      NEWS=newsRes.value;
+      // Sloučíme se localStorage (přidáme nové které nejsou v JSON)
+      const local=newsLoad();
+      const serverIds=new Set(NEWS.map(n=>n.id));
+      const extra=local.filter(n=>!serverIds.has(n.id));
+      if(extra.length) NEWS=[...NEWS,...extra];
+    }
+    if(usedRes.value && Array.isArray(usedRes.value)){
+      const local=usedLoad();
+      const serverIds=new Set(usedRes.value.map(u=>u.id));
+      const extra=local.filter(u=>!serverIds.has(u.id));
+      USED=[...usedRes.value,...extra];
+    }
+    renderBrands(); renderNewsPreview(); renderNewsAll(); renderUsed();
+    renderKmAll(); renderEpAll(); renderBrAll(); renderCanAll(); renderDevAll();
+    renderSecCards(); initCmsM();
+    updateCmsBars();
+    setTimeout(() => initFormCaptcha('servis'), 100);
+  });
 });
 
 // ─── NAV ───
@@ -2679,18 +2699,41 @@ let usedEditId=null;
 let usedLoggedIn=false;
 
 const USED_PASS='Rekant2026!';
+const USED_PIN='4471';  // poslední 4 číslice telefonu
+let usedFailCount=0;
+let usedLockUntil=0;
 
 function openUsedLogin(){
-  const p=prompt('Heslo správce:');
-  if(p===USED_PASS){
-    usedLoggedIn=true;
-    document.getElementById('used-login-bar').style.display='none';
-    const ab=document.getElementById('used-admin-bar');
-    ab.style.display='flex';
-    renderUsed();
-  } else if(p!==null){
-    alert('Nesprávné heslo.');
+  const now=Date.now();
+  if(now<usedLockUntil){
+    const secs=Math.ceil((usedLockUntil-now)/1000);
+    alert(`Příliš mnoho neúspěšných pokusů. Zkuste za ${secs} sekund.`);
+    return;
   }
+  // Krok 1: heslo
+  const p=prompt('Heslo správce (krok 1/2):');
+  if(p===null) return;
+  if(p!==USED_PASS){
+    usedFailCount++;
+    if(usedFailCount>=3){usedLockUntil=Date.now()+60000;usedFailCount=0;alert('Účet dočasně zablokován na 60 sekund.');}
+    else alert(`Nesprávné heslo. (${3-usedFailCount} pokusů zbývá)`);
+    return;
+  }
+  // Krok 2: PIN
+  const pin=prompt('Ověřovací PIN (krok 2/2):');
+  if(pin===null) return;
+  if(pin!==USED_PIN){
+    usedFailCount++;
+    if(usedFailCount>=3){usedLockUntil=Date.now()+60000;usedFailCount=0;alert('Účet dočasně zablokován na 60 sekund.');}
+    else alert(`Nesprávný PIN. (${3-usedFailCount} pokusů zbývá)`);
+    return;
+  }
+  usedFailCount=0;
+  usedLoggedIn=true;
+  document.getElementById('used-login-bar').style.display='none';
+  const ab=document.getElementById('used-admin-bar');
+  ab.style.display='flex';
+  renderUsed();
 }
 function usedLogout(){
   usedLoggedIn=false;
