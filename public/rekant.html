@@ -1194,8 +1194,9 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
           <div class="ff" id="mfp-product-field"><label>Konkrétní stroj (předvyplněno)</label><input type="text" id="mfp-product-inp" placeholder="Nebo vyberte z nabídky…"></div>
           <div class="ff"><label>Typ poptávky</label><select><option>Koupit</option><option>Pronájem</option><option>Více informací</option><option>Cenová nabídka</option></select></div>
           <div class="ff"><label>Objem tisku / poznámka</label><textarea placeholder="Např. cca 5 000 stran/měsíc, barevně i ČB…"></textarea></div>
+          <div id="cap-mfp" class="captcha-box"></div>
           <div class="f-sec">🔒 TLS 1.3 · GDPR compliant</div>
-          <button class="fsubmit" onclick="submitF(this)">Odeslat poptávku na multifunkci →</button>
+          <button class="fsubmit" onclick="submitF(this,'mfp')">Odeslat poptávku na multifunkci →</button>
         </div>
 
         <div id="fp-alarm" class="fpanel">
@@ -1800,7 +1801,7 @@ document.addEventListener("DOMContentLoaded", function() {
     renderKmAll(); renderEpAll(); renderBrAll(); renderCanAll(); renderDevAll();
     renderSecCards(); initCmsM();
     updateCmsBars();
-    setTimeout(() => initFormCaptcha('servis'), 100);
+    setTimeout(() => { ['servis','mfp','alarm','obecne'].forEach(id => initFormCaptcha(id)); }, 100);
   });
 });
 
