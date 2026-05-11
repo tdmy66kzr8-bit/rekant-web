@@ -1103,14 +1103,14 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
       <div><div class="sec-eye">Redakce</div><h1 class="sec-h">Aktuality & novinky</h1></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <button onclick="exportNewsJSON()" id="export-news-btn" style="display:none;padding:8px 16px;font-size:13px;background:#fff;border:1px solid var(--bl);border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:var(--navy)">⬇ Export JSON</button>
-        <button onclick="openCms()" class="btn-red" id="add-btn">✏️ Přidat článek</button>
+        <button onclick="openCms()" class="btn-red" id="add-btn" style="display:none">✏️ Přidat článek</button>
       </div>
     </div>
     <div class="news-grid" id="news-all"></div>
     <div id="cms-hint" style="margin-top:28px;padding:18px 22px;background:var(--g50);border:1px solid var(--bl);border-radius:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <span style="font-size:22px">🔐</span>
       <div style="flex:1"><div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:2px">Jste správce webu?</div><div style="font-size:13px;color:var(--g600)">Přihlaste se pro přidávání a editaci článků.</div></div>
-      <button onclick="openCms()" class="btn-red">Přihlásit se</button>
+      <button onclick="openCms()" class="btn-red" style="display:none">Přihlásit se</button>
     </div>
   </div>
 </div>
@@ -2505,7 +2505,7 @@ function updateCmsBars() {
   if(hint) hint.style.display = a ? 'none' : 'flex';
   const exportBtn = document.getElementById('export-news-btn');
   if(exportBtn) exportBtn.style.display = a ? 'inline-block' : 'none';
-  document.getElementById('add-btn').textContent = a ? '✏️ Přidat článek' : '🔐 Přidat článek';
+  document.getElementById('add-btn').style.display = a ? 'inline-block' : 'none';  // ← PŘIDEJ TUTO ŘÁDKU
 }
 
 function renderAll() {
@@ -2836,47 +2836,48 @@ function exportUsedJSON(){
   a.download='used-machines.json';a.click();
 }
 </script>
-  <!-- AI CHAT WIDGET -->
-<div id="chat-widget" style="position:fixed;bottom:20px;right:20px;width:400px;height:500px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.1);display:none;flex-direction:column;z-index:999;font-family:Inter,sans-serif">
-  
-  <!-- Chat Header -->
-  <div style="background:#cc1a1a;color:#fff;padding:16px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center">
+  <!-- ═══════════════════════════════════════════════ -->
+<!-- AI CHAT WIDGET -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="chat-widget" style="position:fixed;bottom:20px;right:20px;width:380px;max-height:500px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.15);display:none;flex-direction:column;z-index:999;font-family:var(--font)">
+  <!-- Header -->
+  <div style="background:var(--red);color:#fff;padding:16px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;font-weight:700">
     <div>
-      <strong>💬 Asistent Rekant</strong>
-      <div style="font-size:12px;opacity:0.9" id="chat-status">Online</div>
+      <div>💬 Asistent Rekant</div>
+      <div style="font-size:12px;opacity:0.85;font-weight:400" id="chat-status">Online</div>
     </div>
-    <button onclick="closeChatWidget()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:20px">✕</button>
+    <button onclick="closeChatWidget()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:20px;padding:0;width:24px;height:24px">✕</button>
   </div>
 
-  <!-- Chat Messages -->
-  <div id="chat-messages" style="flex:1;overflow-y:auto;padding:16px;background:#f9fafb">
-    <div style="background:#fff;padding:12px;border-radius:8px;margin-bottom:12px;color:#666;font-size:14px">
-      👋 Ahoj! Jsem AI asistent Rekant. Zeptej se mě na cokoliv - pronájmy, alarmy, kamery, atd.
+  <!-- Messages -->
+  <div id="chat-messages" style="flex:1;overflow-y:auto;padding:16px;background:#f9fafb;max-height:350px">
+    <div style="background:#fff;padding:12px;border-radius:8px;margin-bottom:12px;color:#666;font-size:14px;line-height:1.5">
+      👋 Ahoj! Jsem AI asistent Rekant. Ptej se mě na cokoliv - pronájmy, alarmy, kamery, docházku, sítě a další.
     </div>
   </div>
 
-  <!-- Chat Input -->
+  <!-- Input -->
   <div style="padding:12px;border-top:1px solid #e5e7eb;display:flex;gap:8px">
-    <input id="chat-input" type="text" placeholder="Napiš zprávu..." style="flex:1;padding:10px;border:1px solid #e5e7eb;border-radius:6px;font-family:Inter,sans-serif;font-size:14px" onkeypress="if(event.key==='Enter')sendChatMessage()">
-    <button onclick="sendChatMessage()" style="background:#cc1a1a;color:#fff;border:none;padding:10px 16px;border-radius:6px;cursor:pointer;font-weight:600">Odeslat</button>
+    <input id="chat-input" type="text" placeholder="Napiš zprávu..." style="flex:1;padding:10px;border:1px solid #e5e7eb;border-radius:6px;font-family:var(--font);font-size:14px;outline:none" onkeypress="if(event.key==='Enter')sendChatMessage()">
+    <button onclick="sendChatMessage()" style="background:var(--red);color:#fff;border:none;padding:10px 16px;border-radius:6px;cursor:pointer;font-weight:600;font-size:14px">Odeslat</button>
   </div>
 </div>
 
-<!-- Chat Button (kolečko v rohu) -->
-<button id="chat-toggle" onclick="toggleChatWidget()" style="position:fixed;bottom:20px;right:20px;width:60px;height:60px;background:#cc1a1a;color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:24px;box-shadow:0 4px 16px rgba(204,26,26,.3);z-index:998;display:flex;align-items:center;justify-content:center">
-  💬
-</button>
+<!-- Chat Toggle Button -->
+<button id="chat-toggle" onclick="toggleChatWidget()" style="position:fixed;bottom:20px;right:20px;width:60px;height:60px;background:var(--red);color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:28px;box-shadow:0 4px 16px rgba(204,26,26,.4);z-index:998;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-weight:700">💬</button>
 
 <script>
+// Chat Widget JS
 let chatMessages = [];
 
 function toggleChatWidget() {
   const widget = document.getElementById('chat-widget');
-  const button = document.getElementById('chat-toggle');
-  widget.style.display = widget.style.display === 'flex' ? 'none' : 'flex';
-  button.style.display = widget.style.display === 'flex' ? 'none' : 'flex';
-  if(widget.style.display === 'flex') {
-    document.getElementById('chat-input').focus();
+  const btn = document.getElementById('chat-toggle');
+  const isOpen = widget.style.display === 'flex';
+  widget.style.display = isOpen ? 'none' : 'flex';
+  btn.style.display = isOpen ? 'flex' : 'none';
+  if (!isOpen) {
+    setTimeout(() => document.getElementById('chat-input').focus(), 100);
   }
 }
 
@@ -2887,40 +2888,52 @@ function closeChatWidget() {
 
 async function sendChatMessage() {
   const input = document.getElementById('chat-input');
-  const message = input.value.trim();
-  if(!message) return;
+  const msg = input.value.trim();
+  if (!msg) return;
 
   // Přidej zprávu uživatele
-  addChatMessage('user', message);
+  addChatMessage('user', msg);
   input.value = '';
 
-  // Pošli na API
+  // Pošli do API
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: [...chatMessages, { role: 'user', content: message }] })
+      body: JSON.stringify({ messages: [...chatMessages, { role: 'user', content: msg }] })
     });
-    const data = await response.json();
-    if(data.reply) {
-      addChatMessage('assistant', data.reply);
-      // Pokud je handoff, vlož nabídku
-      if(data.needsHandoff && data.operatorAvailable) {
-        addChatMessage('system', '📞 Operátor je dostupný! Chceš si popovídat s lidským člověkem?');
-      }
+    
+    if (!response.ok) {
+      addChatMessage('error', 'Chyba: ' + response.statusText);
+      return;
     }
-  } catch(e) {
-    addChatMessage('error', 'Chyba: ' + e.message);
+
+    const data = await response.json();
+    if (data.reply) {
+      addChatMessage('assistant', data.reply);
+      if (data.needsHandoff && data.operatorAvailable) {
+        addChatMessage('system', '📞 Náš operátor je online! Chceš si popovídat s člověkem?');
+      }
+    } else if (data.error) {
+      addChatMessage('error', 'Chyba: ' + data.error);
+    }
+  } catch (e) {
+    addChatMessage('error', 'Síťová chyba: ' + e.message);
   }
 }
 
 function addChatMessage(role, text) {
   chatMessages.push({ role: role === 'user' ? 'user' : 'assistant', content: text });
   const messagesDiv = document.getElementById('chat-messages');
+  
   const bubble = document.createElement('div');
-  bubble.style.cssText = role === 'user' 
-    ? 'background:#cc1a1a;color:#fff;padding:12px;border-radius:8px;margin-bottom:12px;text-align:right;font-size:14px'
-    : 'background:#fff;color:#333;padding:12px;border-radius:8px;margin-bottom:12px;text-align:left;font-size:14px;border:1px solid #e5e7eb';
+  if (role === 'user') {
+    bubble.style.cssText = 'background:var(--red);color:#fff;padding:12px 14px;border-radius:8px;margin-bottom:12px;text-align:right;font-size:14px;line-height:1.4;word-break:break-word';
+  } else if (role === 'error') {
+    bubble.style.cssText = 'background:#fef2f2;color:#991f1f;padding:12px 14px;border-radius:8px;margin-bottom:12px;font-size:14px;line-height:1.4;border-left:3px solid #dc2626';
+  } else {
+    bubble.style.cssText = 'background:#fff;color:#333;padding:12px 14px;border-radius:8px;margin-bottom:12px;font-size:14px;line-height:1.4;border:1px solid #e5e7eb;word-break:break-word';
+  }
   bubble.textContent = text;
   messagesDiv.appendChild(bubble);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
