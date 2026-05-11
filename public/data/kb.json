@@ -1,0 +1,220 @@
+{
+  "company": {
+    "name": "Rekant s.r.o.",
+    "address": "Severozápadní I. 285/8, Praha 4 – Spořilov",
+    "phone": "244 471 760",
+    "phone_shop": "777 041 813",
+    "phone_service": "777 613 044",
+    "email": "rekant@rekant.cz",
+    "databox": "wk8w2cx",
+    "ico": "28233727",
+    "vat": "CZ28233727",
+    "hours": "Po–Pá 8:00–16:00",
+    "established": "Od roku 2008",
+    "clients": "3800+ spokojených klientů v ČR",
+    "response_time": "Do 2 hodin"
+  },
+
+  "services": {
+    "overview": "Zajišťujeme servis, prodej a pronájem (i krátkodobý) kancelářské techniky v Praze. Dodáváme multifunkční tiskárny, zabezpečovací systémy, kamerové systémy, docházkové systémy a slaboproudé instalace.",
+    
+    "office_equipment": {
+      "description": "Prodej, pronájem a servis kancelářské techniky",
+      "brands": ["Konica Minolta", "Epson", "Brother", "Canon", "Develop"],
+      "rental_price": "od 290 Kč/měsíc",
+      "services": ["Pronájem s údržbou", "Servis na call-center", "Toner a spotřeba zdarma"],
+      "details": "Každá technologie má své výhody. Laserové tiskárny jsou ideální pro kanceláře s vysokým objemem tisku — rychlé, spolehlivé, nízké náklady na stránku. Inkoustové jsou ekonomickou volbou pro střední a menší kanceláře s nižší pořizovací cenou a tichým provozem."
+    },
+
+    "security_systems": {
+      "description": "Certifikovaná instalace, servis a monitoring — Jablotron, Dahua, přístupové systémy",
+      "services": ["Alarm Jablotron 100+", "Kamery Dahua a Hikvision", "Přístupové systémy (RFID, biometrie)", "Docházkové systémy", "Slaboproudé instalace"]
+    }
+  },
+
+  "products": {
+    "jablotron": {
+      "name": "Jablotron 100+",
+      "category": "Alarmní systémy",
+      "description": "Profesionální bezdrátový alarmový systém české výroby — světová špička v zabezpečení",
+      "features": [
+        "Modulární systém — rozšiřitelný dle potřeby",
+        "Bezdrátová technologie — instalace bez kabeláže v zdech",
+        "Komunikace přes GSM síť i internet",
+        "Aplikace MyJABLOTRON — ovládání ze smartphonu",
+        "Okamžité notifikace o každé události"
+      ],
+      "variants": {
+        "residential": "Bezdrátová čidla na dveřích, oknech a pohybu, siréna, napojení na mobil. Instalace bez zásahu do zdí.",
+        "commercial": "Napojení na pult centrální ochrany (PCO), definování zón a časových plánů, automatické vyrozumění majitele i bezpečnostní agentury.",
+        "industrial": "Desítky sekcí, stovky čidel, komplexní přístupové zóny, záložní napájení, SLA smlouva"
+      },
+      "warranty": "24 měsíců",
+      "service": "Servisní smlouvy s roční preventivní prohlídkou, kontrolou baterií, testem komunikace s PCO, 24hodinová dostupnost"
+    },
+
+    "dahua_cameras": {
+      "name": "Dahua CCTV",
+      "category": "IP kamerové systémy",
+      "description": "Moderní IP kamerové systémy s 4K rozlišením a AI analýzou obrazu",
+      "advantages": [
+        "Plné digitální rozlišení bez ztráty kvality",
+        "Vzdálený přístup odkudkoliv na světě",
+        "Propojení s alarmem Jablotron",
+        "AI detekce — rozlišování lidí a vozidel",
+        "24/7 monitoring přes DMSS aplikaci"
+      ],
+      "camera_types": {
+        "indoor": "Dome kamery pro stropní montáž — diskrétní, odolné vůči manipulaci",
+        "outdoor": "Bullet kamery s válcovým tělem, krytí IP66 — odolné vůči dešti a prachu",
+        "resolutions": "2MP (Full HD) až 8MP (4K) — rozpoznání obličeje či SPZ ze vzdálenosti desítek metrů"
+      },
+      "nvr_records": {
+        "description": "Nepřetržitý záznam na lokální úložiště",
+        "archiving": "Standardně 14 až 30 dní zpětného záznamu",
+        "features": "Pohybová detekce, rychlé vyhledávání, export záběrů"
+      },
+      "ai_features": "WizSense a WizMind — rozlišuje lidi a vozidla, méně falešných poplachů, detekce překročení linií, počítání osob",
+      "app": "DMSS (iOS/Android) — sledování kamer, přehrávání, push notifikace",
+      "warranty": "24 měsíců"
+    },
+
+    "hikvision_cameras": {
+      "name": "Hikvision AcuSense",
+      "category": "IP kamerové systémy",
+      "description": "Špičkové AI kamery s hlubokým strojovým učením — světový lídr s 20+ lety zkušeností",
+      "acusense": {
+        "description": "AI algoritmus zpracovávající obraz přímo v kameře",
+        "benefits": "Rozlišuje lidi a vozidla od ostatních pohybů — snížení falešných poplachů o 90%+",
+        "no_alerts_for": "Kočky, ptáci, špatné povětrnostní podmínky"
+      },
+      "colorvu": {
+        "description": "Plnobarevný obraz i v minimálním osvětlení",
+        "benefit": "Bez potřeby přídavného bílého světla — barvy vidět při osvětlení jako svit hvězd"
+      },
+      "deepinmind": {
+        "description": "Proprietární AI pro sofistikované analýzy",
+        "features": [
+          "Rozpoznávání obličejů z databáze",
+          "Počítání osob procházejících zónou",
+          "Detekce výjimečných situací (pád, zanechaný předmět, nakupení lidí)"
+        ],
+        "suitable_for": "Obchodní centra, nemocnice, letiště, průmyslové areály s přísnými bezpečnostními požadavky"
+      },
+      "software": "iVMS-4200 (Windows) — centrální správa stovek kamer, Hik-Connect (cloud)",
+      "warranty": "24 měsíců"
+    },
+
+    "access_control": {
+      "name": "Přístupové systémy",
+      "category": "Řízení vstupu",
+      "description": "RFID karty, čipy, PIN kód, biometrie",
+      "features": [
+        "Zaznamenávání každého vstupu s časovým razítkem",
+        "Propojení s docházkovým systémem",
+        "Různá oprávnění pro jednotlivé zaměstnance",
+        "Elektronické zámky, turnikety, závory",
+        "Správa přes mobilní aplikaci"
+      ]
+    },
+
+    "attendance_systems": {
+      "name": "Docházkové systémy",
+      "category": "Evidence zaměstnanců",
+      "description": "RFID a biometrické terminály s propojením na účetní software",
+      "features": [
+        "Propojení s Pohoda/Money S3",
+        "MDM tablety",
+        "Detailní reporty a absence",
+        "Automatická evidence docházky"
+      ]
+    },
+
+    "low_voltage": {
+      "name": "Slaboproud & Sítě",
+      "category": "Datové sítě",
+      "description": "Instalace strukturované kabeláže a síťové infrastruktury",
+      "services": [
+        "Cat.6/6A kabeláž",
+        "Wi-Fi 6",
+        "VoIP telefony",
+        "Videovrátek",
+        "AV technika",
+        "Datové rozvaděče"
+      ],
+      "standards": "Certifikace dle ČSN norem, profesionální instalace"
+    }
+  },
+
+  "process": {
+    "step1": "Poptávka nebo chat — Online formulář, live chat nebo telefon",
+    "step2": "Technik v dohodnutém termínu — Bezplatná konzultace s protokolem",
+    "step3": "Instalace a konfiguraci — Podle projektu a požadavků",
+    "step4": "Servis a monitoring — SLA smlouvy, revize, telefonická podpora"
+  },
+
+  "faq": [
+    {
+      "q": "Jaké máte kontaktní údaje?",
+      "a": "Rekant s.r.o., Severozápadní I. 285/8, Praha 4 – Spořilov. Tel.: 244 471 760 (ústředna), 777 041 813 (prodejna), 777 613 044 (servis). Email: rekant@rekant.cz"
+    },
+    {
+      "q": "Jaká je vaše pracovní doba?",
+      "a": "Otevřeno Po–Pá od 8:00 do 16:00. Tísňová linka mimo pracovní dobu: 777 041 813."
+    },
+    {
+      "q": "Nabízíte pronájem techniky?",
+      "a": "Ano! Pronajímáme multifunkční tiskárny a kancelářskou techniku od 290 Kč/měsíc. Cena zahrnuje údržbu, servis, toner a spotřebu zdarma."
+    },
+    {
+      "q": "Poskytujete servis a garanci?",
+      "a": "Ano. Všechny stroje mají záruku 24 měsíců. Nabízíme 24hodinový servis na síti s možností prodloužení záruky. Volej 777 613 044."
+    },
+    {
+      "q": "Jak funguje Jablotron alarm?",
+      "a": "Jablotron 100+ je bezdrátový alarmový systém s čidly na dveřích, oknech a pohybu. Komunikuje přes GSM síť nebo internet. Aplikace MyJABLOTRON umožňuje ovládat a sledovat systém ze smartphonu odkudkoliv na světě."
+    },
+    {
+      "q": "Jaké značky reprezentujete?",
+      "a": "Konica Minolta, Develop, Epson, Brother, Canon, Panasonic, Jablotron, Dahua, Hikvision, HSM skartovačky, Toshiba a další."
+    },
+    {
+      "q": "Máte skladem stroje?",
+      "a": "Jednotlivé modely máme obvykle na objednávku. Konkrétní dostupnost a čas dodání ověřte telefonicky: 244 471 760."
+    },
+    {
+      "q": "Kolik trvá doručení a instalace?",
+      "a": "Standardní doručení do 3–5 pracovních dní. Instalace a konfigurace se domluví individuálně dle složitosti (komplexní systémy až 2–3 dny)."
+    },
+    {
+      "q": "Jak si objednat poptávku?",
+      "a": "Můžeš vyplnit online formulář na webu, napsat e-mail na rekant@rekant.cz, nebo zavolat 244 471 760. Odpovíme do 2 hodin."
+    },
+    {
+      "q": "Jaké výhody mají IP kamery?",
+      "a": "IP kamery přenášejí obraz v plném digitálním rozlišení přes síť — bez ztráty kvality. Umožňují vzdálený přístup 24/7, propojení s dalšími systémy a AI detekci. Oproti analogovým systémům jsou výrazně lepší."
+    },
+    {
+      "q": "Co je ColorVu u Hikvision?",
+      "a": "ColorVu přináší plnobarevný obraz v prostředí s minimálním osvětlením — bez přídavného bílého světla. Barvy vidět i při osvětlení odpovídajícím svitu hvězd. Klíčový přínos pro identifikaci barev."
+    },
+    {
+      "q": "Kolik zaznamenávají kamery?",
+      "a": "NVR rekordéry zaznamenávají nepřetržitě. Standardně 14 až 30 dní zpětného záznamu, délku archivace si určíte dle potřeb. Záznamy se ukládají na lokální disk nebo v cloudu."
+    },
+    {
+      "q": "Co je AcuSense?",
+      "a": "AcuSense je AI algoritmus Hikvision integrovaný v kameře. Rozlišuje lidi a vozidla od ostatních pohybů — snižuje falešné poplachy o 90%+. Notifikace jen při skutečných hrozbách."
+    },
+    {
+      "q": "Jaké je krytí venkovních kamer?",
+      "a": "Venkovní kamery mají krytí IP66 — odolné vůči dešti a prachu. Infračervený přísvit umožňuje noční vidění bez přídavného osvětlení."
+    },
+    {
+      "q": "Kolik stojí kompletní instalace?",
+      "a": "Cena závisí na typu a rozsahu systému. Bezplatně vám pošleme cenovou nabídku po konzultaci. Kontaktuj prodejnu na 777 041 813."
+    }
+  ],
+
+  "lastUpdated": "2026-05-11T14:00:00Z"
+}
