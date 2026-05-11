@@ -4,7 +4,7 @@ import path from "path";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// Načíst KB ze souboru
+// Načíst KB ze souboru 
 function loadKBFromFile() {
   const kbPath = path.join(process.cwd(), "public", "data", "kb.json");
   try {
