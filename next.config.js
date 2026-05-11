@@ -1,49 +1,46 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async redirects() {
+  reactStrictMode: true,
+  
+  // Přesměrování na rekant.html
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/',
+          destination: '/rekant.html',
+        },
+      ],
+    };
+  },
+
+  // Headers pro SEO
+  async headers() {
     return [
       {
-        source: '/kontakt',
-        destination: '/#kontakt',
-        permanent: true,
+        source: '/admin/:path*',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
+          },
+        ],
       },
       {
-        source: '/kontakt/',
-        destination: '/#kontakt',
-        permanent: true,
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'POST, GET, OPTIONS',
+          },
+        ],
       },
-      {
-        source: '/sluzby-servis',
-        destination: '/',
-        permanent: true,
-      },
-      {
-        source: '/sluzby-servis/',
-        destination: '/',
-        permanent: true,
-      },
-      {
-  	source: '/produkty',
-  	destination: '/rekant.html#katalog',
-  	permanent: true,
-	},
-	{
-  	source: '/produkty/',
-  	destination: '/rekant.html#katalog',
-  	permanent: true,
-	},
-      {
-        source: '/reference',
-        destination: '/',
-        permanent: true,
-      },
-      {
-        source: '/reference/',
-        destination: '/',
-        permanent: true,
-      },
-    ]
+    ];
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
