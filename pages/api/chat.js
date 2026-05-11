@@ -12,142 +12,85 @@ function loadKBFromFile() {
       return JSON.parse(fs.readFileSync(kbPath, "utf8"));
     }
   } catch (e) {
-    console.warn("Chyba při čtení KB souboru, používám default KB");
+    console.warn("Chyba při čtení KB:", e.message);
   }
   
-  // Default Knowledge Base – používá se při prvním spuštění
+  // Default KB
   return {
     company: {
       name: "Rekant s.r.o.",
-      address: "Severozápadní I. 285/8, Praha 4 – Spořilov",
       phone: "244 471 760",
-      phone_shop: "777 041 813",
-      phone_service: "777 613 044",
       email: "rekant@rekant.cz",
-      databox: "wk8w2cx",
-      ico: "28233727",
-      vat: "CZ28233727",
       hours: "Po–Pá 8:00–15:45",
-      established: "Více než 15 let na trhu",
-      clients: "3800+ spokojených klientů",
     },
-    
-    products: {
-      konica_minolta: {
-        name: "Konica Minolta bizhub i-Series",
-        category: "Kancelářská technika",
-        description: "Moderní barevné i černobílé multifunkční tiskárny",
-        models: [
-          { model: "bizhub i-Series C360", type: "Barevná", speed: "36 str/min", price: "od 45 000 Kč" },
-          { model: "bizhub i-Series C451", type: "Barevná", speed: "45 str/min", price: "od 65 000 Kč" },
-          { model: "bizhub i-Series C550", type: "Barevná", speed: "55 str/min", price: "od 85 000 Kč" },
-        ],
-        features: "Tisk, kopírování, skenování, síťový tisk, propojení s Pohoda",
-        warranty: "24 měsíců",
-        rental: "od 290 Kč/měsíc",
-      },
-      epson: {
-        name: "Epson WorkForce Pro",
-        category: "Kancelářská technika",
-        description: "Spolehlivé inkoustové tiskárny pro kanceláře",
-        models: [
-          { model: "WorkForce Pro WF-C5790", type: "Barevná tiskárna", price: "od 15 000 Kč" },
-        ],
-        features: "Vysokorychlostní tisk, nízké náklady, cloud",
-        warranty: "36 měsíců",
-        rental: "od 290 Kč/měsíc",
-      },
-      jablotron: {
-        name: "Jablotron 100+",
-        category: "Zabezpečovací systémy",
-        description: "Certifikované alarmové systémy",
-        features: "Bezdrátové senzory, mobilní app, okamžité hlášení",
-        certification: "Autorizovaný instalátor",
-      },
-    },
-
-    faq: [
-      {
-        q: "Jaké máte kontaktní údaje?",
-        a: "Rekant s.r.o., tel. 244 471 760, email rekant@rekant.cz, Severozápadní I. 285/8, Praha 4."
-      },
-      {
-        q: "Provozní doba?",
-        a: "Po–Pá 8:00–15:45. Tísňová linka: 777 041 813."
-      },
-      {
-        q: "Nabízíte pronájem techniky?",
-        a: "Ano, pronájmy od 290 Kč/měsíc včetně údržby a servisu."
-      },
-      {
-        q: "Poskytujete servis a garanci?",
-        a: "Ano, 24h servis a záruka 24 měsíců s možností prodloužení."
-      },
-    ],
+    products: {},
+    faq: [],
   };
 }
 
-const KNOWLEDGE_BASE = loadKBFromFile();
+const KB = loadKBFromFile();
 
-const SYSTEM_PROMPT = (kb) => `Jsi inteligentní AI asistent firmy ${kb.company.name} ve městě Praha.
+const SYSTEM_PROMPT = `Jsi inteligentní AI asistent firmy Rekant s.r.o. ve městě Praha.
 
-DŮLEŽITÉ PRAVIDLA:
+PRAVIDLA:
 1. Odpovídáš VŽDY v češtině, stručně (max 3 věty).
-2. Když nevíš odpověď → řekni jasně: "Nevím přesně, ale naše tým to ví – kontaktujte nás!"
-3. Pokud je otázka mimo tvou KB NEBO zákazník žádá konkrétní nabídku → nabídni handoff: "Chcete mluvit s operátorem v čase Po–Pá 8:00–15:45? Připojím vás!"
-4. Přidej relevantní navigační tlačítka: [NAV:km], [NAV:security], [NAV:contact]
-5. Cituj konkrétní ceny jen když je znáš - jinak zaslani: tel. 244 471 760
-
-KONTAKT: ${kb.company.phone} | ${kb.company.email}
-OTEVÍRACÍ DOBA: ${kb.company.hours}
-SLUŽBY: Kancelářská technika, Alarmy Jablotron, Kamery Dahua/Hikvision, Docházka, Slaboproud`;
+2. Když nevíš odpověď → řekni: "Nevím přesně, ale naše tým to ví – kontaktujte nás na ${KB.company.phone}!"
+3. Pokud je otázka mimo KB → nabídni handoff: "Chcete mluvit s operátorem v čase ${KB.company.hours}?"
+4. Základní info: ${KB.company.name}, Tel. ${KB.company.phone}, Email: ${KB.company.email}
+5. Služby: Kancelářská technika, Alarmy, Kamery, Docházka, Slaboproud`;
 
 export default async function handler(req, res) {
-  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  
-  if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST") return res.status(405).end();
 
-  const { messages } = req.body;
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
 
-  if (!messages?.length) {
-    return res.status(400).json({ error: "Chybí zprávy" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Metoda není povolena" });
   }
 
   try {
-    // Přenačíst KB (může se změnit pomocí admin panelu)
-    const currentKB = loadKBFromFile();
+    const { messages } = req.body;
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ error: "Chybí zprávy" });
+    }
+
+    // Bezpečnostní kontrola - omez na posledních 10 zpráv
+    const safeMessages = messages.slice(-10).map(m => ({
+      role: m.role === "user" ? "user" : "assistant",
+      content: String(m.content || "").substring(0, 1000)
+    }));
 
     const response = await client.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 500,
-      system: SYSTEM_PROMPT(currentKB),
-      messages: messages.slice(-15).map(m => ({ 
-        role: m.role, 
-        content: m.content 
-      })),
+      system: SYSTEM_PROMPT,
+      messages: safeMessages,
     });
 
-    const replyText = response.content[0].text;
+    const replyText = response.content[0]?.text || "Omlouvám se, nemohu odpovědět.";
 
-    // Detekce potřeby handoffu
+    // Detekce handoffu
     const needsHandoff = 
-      replyText.includes("Chcete mluvit s operátorem") ||
-      replyText.includes("kontaktujte nás") ||
-      replyText.includes("Nevím");
+      replyText.toLowerCase().includes("kontaktujte") ||
+      replyText.toLowerCase().includes("nevím") ||
+      replyText.toLowerCase().includes("operátor");
 
-    res.status(200).json({ 
+    return res.status(200).json({
       reply: replyText,
       needsHandoff: needsHandoff,
       operatorAvailable: isOperatorAvailable(),
     });
-  } catch (e) {
-    console.error("Chat API error:", e);
-    res.status(500).json({ 
-      error: "Chyba v komunikaci. Zavolejte 244 471 760." 
+
+  } catch (error) {
+    console.error("Chat API Error:", error);
+    return res.status(500).json({
+      error: "Chyba v komunikaci. Zavolejte prosím 244 471 760.",
+      details: error.message || "Neznámá chyba"
     });
   }
 }
@@ -155,19 +98,9 @@ export default async function handler(req, res) {
 // Pracovní doba dispečinku
 function isOperatorAvailable() {
   const now = new Date();
-  const day = now.getDay(); // 0 = neděle, 1 = pondělí, ..., 5 = pátek
+  const day = now.getDay(); // 0 = neděle, 1 = pondělí
   const hour = now.getHours();
-  const minute = now.getMinutes();
 
   // Po–Pá 8:00–15:45
-  if (day >= 1 && day <= 5) {
-    if (hour >= 8 && hour < 16) {
-      if (hour === 15 && minute <= 45) {
-        return true;
-      } else if (hour < 15) {
-        return true;
-      }
-    }
-  }
-  return false;
+  return day >= 1 && day <= 5 && hour >= 8 && hour < 16;
 }
