@@ -1,26 +1,23 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { Redis } from "@upstash/redis";
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+const redis = Redis.fromEnv();
+const KB_KEY = "rekant:kb";
+
 function checkAuth(token) {
   return token === process.env.ADMIN_TOKEN;
 }
 
-// Extrahuje JSON z textu (i z markdown bloků)
 function extractJSON(text) {
-  // Zkus najít JSON v markdown bloku
   const jsonBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (jsonBlockMatch) {
-    return jsonBlockMatch[1].trim();
-  }
+  if (jsonBlockMatch) return jsonBlockMatch[1].trim();
   
-  // Zkus najít JSON object v textu
   const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (jsonMatch) {
-    return jsonMatch[0];
-  }
+  if (jsonMatch) return jsonMatch[0];
   
   return text.trim();
 }
@@ -43,7 +40,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: "Method not allowed" });
   }
 
-  // 1. STÁHNI HTML Z WEBU
+  // 1. STÁHNI HTML
   let websiteText = "";
   try {
     const fetchResponse = await fetch("https://www.rekant.cz", {
@@ -69,7 +66,6 @@ export default async function handler(req, res) {
       return res.status(500).json({
         success: false,
         error: "Stažený web má příliš málo obsahu",
-        textLength: websiteText.length,
       });
     }
   } catch (e) {
@@ -80,7 +76,16 @@ export default async function handler(req, res) {
     });
   }
 
-  // 2. POŠLI AI KE ZPRACOVÁNÍ
+  // 2. NAČTI AKTUÁLNÍ KB Z DATABÁZE (zachovat kontakty!)
+  let currentKB = {};
+  try {
+    const dbKB = await redis.get(KB_KEY);
+    if (dbKB) currentKB = dbKB;
+  } catch (e) {
+    console.warn("Cannot load current KB:", e.message);
+  }
+
+  // 3. POŠLI AI - ALE POUZE PRO POPISY, PRODUKTY, FAQ!
   let aiReply = "";
   let tokensUsed = null;
   try {
@@ -89,44 +94,63 @@ export default async function handler(req, res) {
       max_tokens: 4000,
       system: `Jsi expert na extrakci dat z webových stránek pro firmu Rekant s.r.o.
 
-Vytvoř JSON KB ze zadaného obsahu webu rekant.cz.
+ÚKOL: Z obsahu webu rekant.cz vytvoř JSON s POPISY SLUŽEB, PRODUKTŮ A FAQ.
 
-DŮLEŽITÉ:
-- VRAŤ POUZE JSON, ŽÁDNÝ KOMENTÁŘ
-- ŽÁDNÉ markdown bloky (žádné \`\`\`json\`\`\`)
-- POUZE čisté JSON {...}
+DŮLEŽITÉ: 
+- NEPIŠEŠ telefony, emaily, adresu, IČO ani jiné kontakty!
+- Soustřeď se POUZE na popisy služeb, produktů a FAQ otázky
+- Vrať POUZE JSON, žádný komentář, žádné markdown bloky
 
 STRUKTURA:
 {
-  "company": {
-    "name": "Rekant s.r.o.",
-    "tagline": "...",
-    "address": "Severozápadní I. 285/8, Praha 4 – Spořilov",
-    "phone": "244 471 760",
-    "phone_shop": "777 041 813",
-    "phone_service": "777 613 044",
-    "email": "rekant@rekant.cz",
-    "hours": "Po–Pá 8:00–16:00",
-    "ico": "28233727",
-    "vat": "CZ28233727",
-    "established": "Od roku 2008",
-    "description": "..."
-  },
   "services": {
-    "office_equipment": {"name": "Kancelářská technika", "description": "...", "brands": ["Konica Minolta", "Epson"]},
-    "security": {"name": "Zabezpečení", "description": "...", "brands": ["Jablotron", "Dahua"]}
+    "office_equipment": {
+      "name": "Kancelářská technika",
+      "description": "...",
+      "brands": ["Konica Minolta", "Epson", "..."]
+    },
+    "security": {
+      "name": "Zabezpečení",
+      "description": "...",
+      "brands": ["Jablotron", "Dahua", "..."]
+    },
+    "attendance": {
+      "name": "Docházkové systémy",
+      "description": "..."
+    },
+    "low_voltage": {
+      "name": "Slaboproud",
+      "description": "..."
+    }
   },
   "products": {
-    "bizhub_i_series": {"name": "Konica Minolta bizhub i-Series", "description": "...", "features": ["...", "..."]},
-    "jablotron": {"name": "Jablotron 100+", "description": "...", "features": ["...", "..."]}
+    "bizhub_i_series": {
+      "name": "Konica Minolta bizhub i-Series",
+      "description": "...",
+      "features": ["...", "..."]
+    },
+    "jablotron": {
+      "name": "Jablotron 100+",
+      "description": "...",
+      "features": ["...", "..."]
+    },
+    "dahua_cctv": {
+      "name": "Dahua CCTV",
+      "description": "...",
+      "features": ["...", "..."]
+    },
+    "hikvision_acusense": {
+      "name": "Hikvision AcuSense",
+      "description": "...",
+      "features": ["...", "..."]
+    }
   },
   "faq": [
-    {"q": "...", "a": "..."},
     {"q": "...", "a": "..."}
   ]
 }
 
-Vytvoř MINIMÁLNĚ 10 FAQ. Vrať POUZE JSON, nic víc!`,
+Vytvoř MINIMÁLNĚ 10 FAQ otázek. POUZE JSON!`,
       messages: [
         {
           role: "user",
@@ -145,7 +169,7 @@ Vytvoř MINIMÁLNĚ 10 FAQ. Vrať POUZE JSON, nic víc!`,
     });
   }
 
-  // 3. PARSE JSON
+  // 4. PARSE JSON
   let parsedKB;
   try {
     const cleanJson = extractJSON(aiReply);
@@ -155,41 +179,55 @@ Vytvoř MINIMÁLNĚ 10 FAQ. Vrať POUZE JSON, nic víc!`,
       success: false,
       error: "AI vrátila neplatný JSON",
       details: e.message,
-      rawPreview: aiReply.substring(0, 500),
     });
   }
 
-  // 4. VALIDACE
-  if (!parsedKB.company) {
-    parsedKB.company = {
+  // 5. SLOUČIT - ZACHOVAT KONTAKTY Z CURRENT KB!
+  const mergedKB = {
+    // ZACHOVAT aktuální kontakty (admin změny!)
+    company: currentKB.company || {
       name: "Rekant s.r.o.",
       address: "Severozápadní I. 285/8, Praha 4 – Spořilov",
       phone: "244 471 760",
+      phone_shop: "777 041 813",
+      phone_service: "777 613 044",
       email: "rekant@rekant.cz",
       hours: "Po–Pá 8:00–16:00",
-    };
-  }
-
-  if (!parsedKB.faq || !Array.isArray(parsedKB.faq)) {
-    parsedKB.faq = [];
-  }
-
-  // 5. METADATA
-  parsedKB.lastUpdated = new Date().toISOString();
-  parsedKB.lastScan = {
-    date: new Date().toISOString(),
-    source: "https://www.rekant.cz",
-    method: "automatic-ai-scan",
-    contentLength: websiteText.length,
+    },
+    // AKTUALIZOVAT z webu
+    services: parsedKB.services || currentKB.services || {},
+    products: parsedKB.products || currentKB.products || {},
+    faq: parsedKB.faq || currentKB.faq || [],
+    // METADATA
+    lastUpdated: new Date().toISOString(),
+    lastScan: {
+      date: new Date().toISOString(),
+      source: "https://www.rekant.cz",
+      method: "automatic-ai-scan-merge",
+      preserved: ["company"],
+      updated: ["services", "products", "faq"],
+      contentLength: websiteText.length,
+    },
   };
 
-  // 6. VRAŤ DATA KLIENTOVI
+  // 6. ULOŽ DO REDIS
+  try {
+    await redis.set(KB_KEY, mergedKB);
+  } catch (e) {
+    return res.status(500).json({
+      success: false,
+      error: "Nelze uložit do databáze",
+      details: e.message,
+    });
+  }
+
+  // 7. VRAŤ
   return res.status(200).json({
     success: true,
-    message: "Web naskenován a AI zpracovala data",
-    kb: parsedKB,
+    message: "Web naskenován! Popisy a FAQ aktualizovány, kontakty zachovány.",
+    kb: mergedKB,
     tokensUsed,
-    sourceLength: websiteText.length,
+    preserved: ["company - kontakty se nepřepisují, edituj je v záložce Firma"],
+    updated: ["services - popisy služeb", "products - popisy produktů", "faq - otázky a odpovědi"],
   });
 }
-
