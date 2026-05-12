@@ -1,8 +1,34 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { Redis } from "@upstash/redis";
+import fs from "fs";
+import path from "path";
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
+
+const redis = Redis.fromEnv();
+const KB_KEY = "rekant:kb";
+
+async function loadKB() {
+  try {
+    const dbKB = await redis.get(KB_KEY);
+    if (dbKB) return dbKB;
+  } catch (e) {
+    console.warn("Redis not available:", e.message);
+  }
+
+  try {
+    const kbPath = path.join(process.cwd(), "public", "data", "kb.json");
+    if (fs.existsSync(kbPath)) {
+      return JSON.parse(fs.readFileSync(kbPath, "utf-8"));
+    }
+  } catch (e) {
+    console.error("File KB error:", e.message);
+  }
+
+  return null;
+}
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -24,13 +50,27 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Invalid messages" });
     }
 
-    const systemPrompt = `Jsi AI asistent Rekant s.r.o. v Praze.
-Firma: www.rekant.cz
-Odpovídáš V ČEŠTINĚ, stručně (max 3 věty).
-Kontakt: 244 471 760, rekant@rekant.cz
-Otevřeno: Po–Pá 8:00–16:00
-Služby: Pronájem tiskáren, alarmy Jablotron, kamery Dahua/Hikvision, přístupové systémy, docházka.
-Když neznáš odpověď → "Kontaktuj nás: 244 471 760"`;
+    const kb = await loadKB();
+    const kbContext = kb ? JSON.stringify(kb, null, 2) : "";
+
+    const systemPrompt = `Jsi AI asistent firmy Rekant s.r.o. v Praze.
+Odpovídáš VŽDY V ČEŠTINĚ, stručně (max 3-4 věty), profesionálně.
+
+ZÁKLADNÍ INFORMACE:
+- Firma: Rekant s.r.o., www.rekant.cz
+- Adresa: Severozápadní I. 285/8, Praha 4 – Spořilov
+- Pracovní doba: Po–Pá 8:00–16:00
+
+DŮLEŽITÁ PRAVIDLA:
+1. NIKDY nezmiňuj konkurenty Myself.cz nebo Verso.cz!
+2. Pokud neznáš odpověď, řekni: "Pro přesné informace volejte ústřednu"
+3. Buď přátelský a profesionální
+4. Doporučuj naše služby a produkty
+5. U cenových dotazů vždy odkaž na telefonát/email
+6. POUŽÍVAJ AKTUÁLNÍ ÚDAJE Z KNOWLEDGE BASE (kontakty se mohou měnit)
+
+ZNALOSTNÍ BÁZE FIRMY (aktuální):
+${kbContext}`;
 
     const safeMessages = messages.slice(-5).map((m) => ({
       role: m.role === "user" ? "user" : "assistant",
@@ -39,7 +79,7 @@ Když neznáš odpověď → "Kontaktuj nás: 244 471 760"`;
 
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 400,
+      max_tokens: 500,
       system: systemPrompt,
       messages: safeMessages,
     });
@@ -48,7 +88,9 @@ Když neznáš odpověď → "Kontaktuj nás: 244 471 760"`;
 
     return res.status(200).json({
       reply,
-      needsHandoff: reply.toLowerCase().includes("kontaktuj"),
+      needsHandoff:
+        reply.toLowerCase().includes("kontaktuj") ||
+        reply.toLowerCase().includes("volejte"),
       operatorAvailable: isOperatorOnline(),
     });
   } catch (error) {
