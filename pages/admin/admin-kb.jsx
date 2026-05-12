@@ -9,6 +9,7 @@ export default function AdminKB() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [syncResult, setSyncResult] = useState(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -56,7 +57,7 @@ export default function AdminKB() {
 
   const showMessage = (msg, type = 'success') => {
     setMessage({ text: msg, type });
-    setTimeout(() => setMessage(''), 4000);
+    setTimeout(() => setMessage(''), 5000);
   };
 
   const saveKB = async () => {
@@ -90,10 +91,7 @@ export default function AdminKB() {
   const updateService = (key, field, value) => {
     setKB({
       ...kb,
-      services: {
-        ...kb.services,
-        [key]: { ...kb.services[key], [field]: value },
-      },
+      services: { ...kb.services, [key]: { ...kb.services[key], [field]: value } },
     });
     setHasChanges(true);
   };
@@ -102,10 +100,7 @@ export default function AdminKB() {
     const arr = value.split(',').map(s => s.trim()).filter(Boolean);
     setKB({
       ...kb,
-      services: {
-        ...kb.services,
-        [key]: { ...kb.services[key], [field]: arr },
-      },
+      services: { ...kb.services, [key]: { ...kb.services[key], [field]: arr } },
     });
     setHasChanges(true);
   };
@@ -113,10 +108,7 @@ export default function AdminKB() {
   const updateProduct = (key, field, value) => {
     setKB({
       ...kb,
-      products: {
-        ...kb.products,
-        [key]: { ...kb.products[key], [field]: value },
-      },
+      products: { ...kb.products, [key]: { ...kb.products[key], [field]: value } },
     });
     setHasChanges(true);
   };
@@ -125,10 +117,7 @@ export default function AdminKB() {
     const features = value.split('\n').map(s => s.trim()).filter(Boolean);
     setKB({
       ...kb,
-      products: {
-        ...kb.products,
-        [key]: { ...kb.products[key], features },
-      },
+      products: { ...kb.products, [key]: { ...kb.products[key], features } },
     });
     setHasChanges(true);
   };
@@ -138,10 +127,7 @@ export default function AdminKB() {
       showMessage('Vypln otazku i odpoved', 'error');
       return;
     }
-    setKB({
-      ...kb,
-      faq: [...(kb.faq || []), { q: newFaq.q, a: newFaq.a }],
-    });
+    setKB({ ...kb, faq: [...(kb.faq || []), { q: newFaq.q, a: newFaq.a }] });
     setNewFaq({ q: '', a: '' });
     setHasChanges(true);
     showMessage('FAQ pridano (nezapomen ulozit)');
@@ -161,8 +147,9 @@ export default function AdminKB() {
     setHasChanges(true);
   };
 
+  // SCAN WEBSITE
   const scanWebsite = async () => {
-    if (!confirm('Spustit automaticke skenovani www.rekant.cz?')) return;
+    if (!confirm('Spustit automaticke skenovani www.rekant.cz?\n\nAktualizuje POPISY a FAQ, kontakty zachova.')) return;
     setLoading(true);
     showMessage('Skenuji obsah webu...', 'info');
 
@@ -188,6 +175,37 @@ export default function AdminKB() {
         }
       } else {
         showMessage('Chyba: ' + (data.error || 'Neznama'), 'error');
+      }
+    } catch (e) {
+      showMessage(e.message, 'error');
+    }
+    setLoading(false);
+  };
+
+  // SYNC WEBSITE - NOVÉ TLAČÍTKO
+  const syncWebsite = async () => {
+    if (!confirm('Synchronizovat kontakty na www.rekant.cz?\n\nTato akce:\n• Vezme aktuální KB\n• Aktualizuje rekant.html na GitHubu\n• Vercel automaticky deployuje (~3 min)\n• Změny budou viditelné na webu\n\nPokračovat?')) return;
+
+    setLoading(true);
+    setSyncResult(null);
+    showMessage('Synchronizuji web... Toto chvíli trvá...', 'info');
+
+    try {
+      const res = await fetch('/api/sync-website', {
+        method: 'POST',
+        headers: { 'x-admin-token': token },
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setSyncResult(data);
+        if (data.changes && data.changes.length > 0) {
+          showMessage(`Web synchronizován! Změny: ${data.changes.length}`, 'success');
+        } else {
+          showMessage('Web už je synchronizovaný - žádné změny', 'info');
+        }
+      } else {
+        showMessage('Chyba: ' + (data.error || data.details || 'Neznámá'), 'error');
       }
     } catch (e) {
       showMessage(e.message, 'error');
@@ -366,17 +384,41 @@ export default function AdminKB() {
         </div>
       )}
 
+      {/* NOVÉ: SYNC RESULT */}
+      {syncResult && syncResult.changes && syncResult.changes.length > 0 && (
+        <div style={{
+          padding: '15px',
+          marginBottom: '20px',
+          borderRadius: '8px',
+          background: '#dcfce7',
+          border: '1px solid #16a34a',
+        }}>
+          <strong style={{ color: '#166534' }}>✅ Synchronizace dokončena!</strong>
+          <ul style={{ marginTop: '8px', marginBottom: 0, color: '#166534' }}>
+            {syncResult.changes.map((change, i) => (
+              <li key={i} style={{ fontSize: '13px' }}>{change}</li>
+            ))}
+          </ul>
+          {syncResult.deploymentNote && (
+            <p style={{ marginTop: '8px', marginBottom: 0, fontSize: '13px', fontStyle: 'italic', color: '#166534' }}>
+              ⏱ {syncResult.deploymentNote}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* AUTOMATICKÉ UČENÍ - Z WEBU */}
       <div style={{
         background: 'linear-gradient(135deg, #cc1a1a 0%, #9b1313 100%)',
         color: '#fff',
-        padding: '24px',
+        padding: '20px',
         borderRadius: '12px',
-        marginBottom: '20px',
+        marginBottom: '15px',
         textAlign: 'center',
       }}>
-        <h2 style={{ margin: '0 0 8px 0' }}>Automaticke uceni chatu z webu</h2>
-        <p style={{ margin: '0 0 15px 0', opacity: 0.9, fontSize: '14px' }}>
-          Klikni a chat automaticky stahne a nauci se obsah www.rekant.cz
+        <h2 style={{ margin: '0 0 8px 0', fontSize: '20px' }}>📥 Automatické učení chatu z webu</h2>
+        <p style={{ margin: '0 0 12px 0', opacity: 0.9, fontSize: '13px' }}>
+          Chat stáhne a naučí se obsah www.rekant.cz (popisy, FAQ)
         </p>
         <button
           onClick={scanWebsite}
@@ -385,15 +427,47 @@ export default function AdminKB() {
             background: '#fff',
             color: '#cc1a1a',
             border: 'none',
-            padding: '12px 28px',
-            borderRadius: '8px',
+            padding: '10px 24px',
+            borderRadius: '6px',
             cursor: loading ? 'not-allowed' : 'pointer',
             fontWeight: 'bold',
-            fontSize: '15px',
+            fontSize: '14px',
             opacity: loading ? 0.5 : 1,
           }}
         >
-          {loading ? 'Skenuji...' : 'Aktualizovat znalosti z webu'}
+          {loading ? 'Skenuji...' : '🔄 Aktualizovat znalosti z webu'}
+        </button>
+      </div>
+
+      {/* NOVÉ: SYNCHRONIZACE WEBU */}
+      <div style={{
+        background: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
+        color: '#fff',
+        padding: '20px',
+        borderRadius: '12px',
+        marginBottom: '20px',
+        textAlign: 'center',
+      }}>
+        <h2 style={{ margin: '0 0 8px 0', fontSize: '20px' }}>🌐 Synchronizace webu s KB</h2>
+        <p style={{ margin: '0 0 12px 0', opacity: 0.9, fontSize: '13px' }}>
+          Aktualizuje kontakty (telefony, email) na hlavní stránce rekant.cz
+        </p>
+        <button
+          onClick={syncWebsite}
+          disabled={loading}
+          style={{
+            background: '#fff',
+            color: '#16a34a',
+            border: 'none',
+            padding: '10px 24px',
+            borderRadius: '6px',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            opacity: loading ? 0.5 : 1,
+          }}
+        >
+          {loading ? 'Synchronizuji...' : '🌐 Synchronizovat web s KB'}
         </button>
       </div>
 
@@ -409,63 +483,20 @@ export default function AdminKB() {
         <div style={styles.card}>
           <h3>Informace o firme</h3>
           <div style={styles.grid}>
-            <div>
-              <label style={styles.label}>Nazev firmy</label>
-              <input type="text" value={kb.company.name || ''} onChange={(e) => updateCompany('name', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>Slogan</label>
-              <input type="text" value={kb.company.tagline || ''} onChange={(e) => updateCompany('tagline', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>Adresa</label>
-              <input type="text" value={kb.company.address || ''} onChange={(e) => updateCompany('address', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>Telefon (ustredna)</label>
-              <input type="text" value={kb.company.phone || ''} onChange={(e) => updateCompany('phone', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>Telefon (prodejna)</label>
-              <input type="text" value={kb.company.phone_shop || ''} onChange={(e) => updateCompany('phone_shop', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>Telefon (servis)</label>
-              <input type="text" value={kb.company.phone_service || ''} onChange={(e) => updateCompany('phone_service', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>Email</label>
-              <input type="text" value={kb.company.email || ''} onChange={(e) => updateCompany('email', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>Email (servis)</label>
-              <input type="text" value={kb.company.email_service || ''} onChange={(e) => updateCompany('email_service', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>Pracovni doba</label>
-              <input type="text" value={kb.company.hours || ''} onChange={(e) => updateCompany('hours', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>ICO</label>
-              <input type="text" value={kb.company.ico || ''} onChange={(e) => updateCompany('ico', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>DIC</label>
-              <input type="text" value={kb.company.vat || ''} onChange={(e) => updateCompany('vat', e.target.value)} style={styles.input} />
-            </div>
-            <div>
-              <label style={styles.label}>Datova schranka</label>
-              <input type="text" value={kb.company.databox || ''} onChange={(e) => updateCompany('databox', e.target.value)} style={styles.input} />
-            </div>
+            <div><label style={styles.label}>Nazev firmy</label><input type="text" value={kb.company.name || ''} onChange={(e) => updateCompany('name', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>Slogan</label><input type="text" value={kb.company.tagline || ''} onChange={(e) => updateCompany('tagline', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>Adresa</label><input type="text" value={kb.company.address || ''} onChange={(e) => updateCompany('address', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>Telefon (ustredna)</label><input type="text" value={kb.company.phone || ''} onChange={(e) => updateCompany('phone', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>Telefon (prodejna)</label><input type="text" value={kb.company.phone_shop || ''} onChange={(e) => updateCompany('phone_shop', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>Telefon (servis)</label><input type="text" value={kb.company.phone_service || ''} onChange={(e) => updateCompany('phone_service', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>Email</label><input type="text" value={kb.company.email || ''} onChange={(e) => updateCompany('email', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>Email (servis)</label><input type="text" value={kb.company.email_service || ''} onChange={(e) => updateCompany('email_service', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>Pracovni doba</label><input type="text" value={kb.company.hours || ''} onChange={(e) => updateCompany('hours', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>ICO</label><input type="text" value={kb.company.ico || ''} onChange={(e) => updateCompany('ico', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>DIC</label><input type="text" value={kb.company.vat || ''} onChange={(e) => updateCompany('vat', e.target.value)} style={styles.input} /></div>
+            <div><label style={styles.label}>Datova schranka</label><input type="text" value={kb.company.databox || ''} onChange={(e) => updateCompany('databox', e.target.value)} style={styles.input} /></div>
           </div>
-          <div>
-            <label style={styles.label}>Popis firmy</label>
-            <textarea
-              value={kb.company.description || ''}
-              onChange={(e) => updateCompany('description', e.target.value)}
-              style={{ ...styles.input, minHeight: '100px' }}
-            />
-          </div>
+          <div><label style={styles.label}>Popis firmy</label><textarea value={kb.company.description || ''} onChange={(e) => updateCompany('description', e.target.value)} style={{ ...styles.input, minHeight: '100px' }} /></div>
         </div>
       )}
 
@@ -473,35 +504,12 @@ export default function AdminKB() {
         <div>
           {Object.entries(kb.services).map(([key, service]) => (
             <div key={key} style={styles.productCard}>
-              <h3 style={{ marginTop: 0, color: '#cc1a1a' }}>
-                {service.name || key}
-              </h3>
+              <h3 style={{ marginTop: 0, color: '#cc1a1a' }}>{service.name || key}</h3>
               <div style={styles.grid}>
-                <div>
-                  <label style={styles.label}>Nazev</label>
-                  <input type="text" value={service.name || ''} onChange={(e) => updateService(key, 'name', e.target.value)} style={styles.input} />
-                </div>
-                <div>
-                  <label style={styles.label}>Znacky (oddelene carkou)</label>
-                  <input
-                    type="text"
-                    value={(service.brands || []).join(', ')}
-                    onChange={(e) => updateServiceArray(key, 'brands', e.target.value)}
-                    style={styles.input}
-                    placeholder="Jablotron, Dahua, Hikvision"
-                  />
-                </div>
+                <div><label style={styles.label}>Nazev</label><input type="text" value={service.name || ''} onChange={(e) => updateService(key, 'name', e.target.value)} style={styles.input} /></div>
+                <div><label style={styles.label}>Znacky (oddelene carkou)</label><input type="text" value={(service.brands || []).join(', ')} onChange={(e) => updateServiceArray(key, 'brands', e.target.value)} style={styles.input} /></div>
               </div>
-              <div>
-                <label style={styles.label}>Popis sluzby</label>
-                <textarea value={service.description || ''} onChange={(e) => updateService(key, 'description', e.target.value)} style={{ ...styles.input, minHeight: '60px' }} />
-              </div>
-              {service.rental_info !== undefined && (
-                <div style={{ marginTop: '10px' }}>
-                  <label style={styles.label}>Info o pronajmu</label>
-                  <input type="text" value={service.rental_info || ''} onChange={(e) => updateService(key, 'rental_info', e.target.value)} style={styles.input} />
-                </div>
-              )}
+              <div><label style={styles.label}>Popis sluzby</label><textarea value={service.description || ''} onChange={(e) => updateService(key, 'description', e.target.value)} style={{ ...styles.input, minHeight: '60px' }} /></div>
             </div>
           ))}
         </div>
@@ -511,39 +519,13 @@ export default function AdminKB() {
         <div>
           {Object.entries(kb.products).map(([key, product]) => (
             <div key={key} style={styles.productCard}>
-              <h3 style={{ marginTop: 0, color: '#cc1a1a' }}>
-                {product.name || key}
-              </h3>
+              <h3 style={{ marginTop: 0, color: '#cc1a1a' }}>{product.name || key}</h3>
               <div style={styles.grid}>
-                <div>
-                  <label style={styles.label}>Nazev produktu</label>
-                  <input type="text" value={product.name || ''} onChange={(e) => updateProduct(key, 'name', e.target.value)} style={styles.input} />
-                </div>
-                <div>
-                  <label style={styles.label}>Kategorie</label>
-                  <input type="text" value={product.category || ''} onChange={(e) => updateProduct(key, 'category', e.target.value)} style={styles.input} />
-                </div>
-                <div>
-                  <label style={styles.label}>Typ produktu</label>
-                  <input type="text" value={product.type || ''} onChange={(e) => updateProduct(key, 'type', e.target.value)} style={styles.input} />
-                </div>
-                <div>
-                  <label style={styles.label}>Cena/info</label>
-                  <input type="text" value={product.rental || product.info || ''} onChange={(e) => updateProduct(key, product.rental ? 'rental' : 'info', e.target.value)} style={styles.input} />
-                </div>
+                <div><label style={styles.label}>Nazev produktu</label><input type="text" value={product.name || ''} onChange={(e) => updateProduct(key, 'name', e.target.value)} style={styles.input} /></div>
+                <div><label style={styles.label}>Kategorie</label><input type="text" value={product.category || ''} onChange={(e) => updateProduct(key, 'category', e.target.value)} style={styles.input} /></div>
               </div>
-              <div>
-                <label style={styles.label}>Popis</label>
-                <textarea value={product.description || ''} onChange={(e) => updateProduct(key, 'description', e.target.value)} style={{ ...styles.input, minHeight: '60px' }} />
-              </div>
-              <div style={{ marginTop: '10px' }}>
-                <label style={styles.label}>Funkce/vlastnosti (kazda na novem radku)</label>
-                <textarea
-                  value={(product.features || []).join('\n')}
-                  onChange={(e) => updateProductFeatures(key, e.target.value)}
-                  style={{ ...styles.input, minHeight: '120px' }}
-                />
-              </div>
+              <div><label style={styles.label}>Popis</label><textarea value={product.description || ''} onChange={(e) => updateProduct(key, 'description', e.target.value)} style={{ ...styles.input, minHeight: '60px' }} /></div>
+              <div style={{ marginTop: '10px' }}><label style={styles.label}>Funkce (kazda na novem radku)</label><textarea value={(product.features || []).join('\n')} onChange={(e) => updateProductFeatures(key, e.target.value)} style={{ ...styles.input, minHeight: '120px' }} /></div>
             </div>
           ))}
         </div>
@@ -552,37 +534,17 @@ export default function AdminKB() {
       {activeTab === 'faq' && (
         <div style={styles.card}>
           <h3>Pridat nove FAQ</h3>
-          <input
-            type="text"
-            placeholder="Otazka..."
-            value={newFaq.q}
-            onChange={(e) => setNewFaq({ ...newFaq, q: e.target.value })}
-            style={{ ...styles.input, marginBottom: '10px' }}
-          />
-          <textarea
-            placeholder="Odpoved..."
-            value={newFaq.a}
-            onChange={(e) => setNewFaq({ ...newFaq, a: e.target.value })}
-            style={{ ...styles.input, marginBottom: '10px', minHeight: '80px' }}
-          />
+          <input type="text" placeholder="Otazka..." value={newFaq.q} onChange={(e) => setNewFaq({ ...newFaq, q: e.target.value })} style={{ ...styles.input, marginBottom: '10px' }} />
+          <textarea placeholder="Odpoved..." value={newFaq.a} onChange={(e) => setNewFaq({ ...newFaq, a: e.target.value })} style={{ ...styles.input, marginBottom: '10px', minHeight: '80px' }} />
           <button onClick={addFaq} style={{ ...styles.btn, background: '#16a34a' }}>Pridat FAQ</button>
 
           <h3 style={{ marginTop: '30px' }}>Existujici FAQ ({kb.faq?.length || 0})</h3>
           {kb.faq?.map((item, idx) => (
             <div key={idx} style={{ ...styles.productCard, marginBottom: '15px' }}>
               <label style={styles.label}>Otazka {idx + 1}</label>
-              <input
-                type="text"
-                value={item.q}
-                onChange={(e) => updateFaq(idx, 'q', e.target.value)}
-                style={{ ...styles.input, marginBottom: '8px' }}
-              />
+              <input type="text" value={item.q} onChange={(e) => updateFaq(idx, 'q', e.target.value)} style={{ ...styles.input, marginBottom: '8px' }} />
               <label style={styles.label}>Odpoved</label>
-              <textarea
-                value={item.a}
-                onChange={(e) => updateFaq(idx, 'a', e.target.value)}
-                style={{ ...styles.input, marginBottom: '10px', minHeight: '60px' }}
-              />
+              <textarea value={item.a} onChange={(e) => updateFaq(idx, 'a', e.target.value)} style={{ ...styles.input, marginBottom: '10px', minHeight: '60px' }} />
               <button onClick={() => deleteFaq(idx)} style={styles.btnDanger}>Smazat</button>
             </div>
           ))}
@@ -592,17 +554,13 @@ export default function AdminKB() {
       {activeTab === 'preview' && (
         <div style={styles.card}>
           <h3>Nahled KB (JSON)</h3>
-          <pre style={{ background: '#f9fafb', padding: '15px', borderRadius: '6px', overflow: 'auto', fontSize: '12px', maxHeight: '600px' }}>
-            {JSON.stringify(kb, null, 2)}
-          </pre>
+          <pre style={{ background: '#f9fafb', padding: '15px', borderRadius: '6px', overflow: 'auto', fontSize: '12px', maxHeight: '600px' }}>{JSON.stringify(kb, null, 2)}</pre>
         </div>
       )}
 
       <div style={{ textAlign: 'center', marginTop: '30px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
         {hasChanges && (
-          <button onClick={saveKB} disabled={loading} style={{ ...styles.btn, background: '#16a34a', padding: '14px 30px', fontSize: '16px' }}>
-            Ulozit vsechny zmeny
-          </button>
+          <button onClick={saveKB} disabled={loading} style={{ ...styles.btn, background: '#16a34a', padding: '14px 30px', fontSize: '16px' }}>Ulozit vsechny zmeny</button>
         )}
         <button onClick={exportKB} style={styles.btnSecondary}>Stahnout zalohu</button>
       </div>
