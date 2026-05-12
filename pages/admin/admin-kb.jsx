@@ -4,13 +4,12 @@ export default function AdminKB() {
   const [token, setToken] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [kb, setKB] = useState(null);
-  const [activeTab, setActiveTab] = useState('faq');
+  const [activeTab, setActiveTab] = useState('company');
   const [newFaq, setNewFaq] = useState({ q: '', a: '' });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [scanResult, setScanResult] = useState(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
-  // Načti token z localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('kb-admin-token');
@@ -31,6 +30,7 @@ export default function AdminKB() {
         const data = await res.json();
         setKB(data);
         setIsLoggedIn(true);
+        setHasChanges(false);
         if (typeof window !== 'undefined') {
           localStorage.setItem('kb-admin-token', t);
         }
@@ -41,10 +41,7 @@ export default function AdminKB() {
   };
 
   const handleLogin = () => {
-    if (!token) {
-      alert('Zadej token');
-      return;
-    }
+    if (!token) return alert('Zadej token');
     tryLogin(token);
   };
 
@@ -62,11 +59,7 @@ export default function AdminKB() {
     setTimeout(() => setMessage(''), 4000);
   };
 
-  const addFaq = async () => {
-    if (!newFaq.q.trim() || !newFaq.a.trim()) {
-      showMessage('Vyplň otázku i odpověď', 'error');
-      return;
-    }
+  const saveKB = async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/kb-manager', {
@@ -75,97 +68,129 @@ export default function AdminKB() {
           'Content-Type': 'application/json',
           'x-admin-token': token,
         },
-        body: JSON.stringify({
-          action: 'add-faq',
-          q: newFaq.q,
-          a: newFaq.a,
-        }),
+        body: JSON.stringify({ action: 'update-full', kb }),
       });
       if (res.ok) {
-        setNewFaq({ q: '', a: '' });
-        await tryLogin(token);
-        showMessage('✅ FAQ přidáno!');
+        showMessage('Zmeny ulozeny! Chat se okamzite nauci.');
+        setHasChanges(false);
       } else {
-        showMessage('❌ Chyba při ukládání', 'error');
+        showMessage('Chyba ukladani', 'error');
       }
     } catch (e) {
-      showMessage('❌ ' + e.message, 'error');
+      showMessage(e.message, 'error');
     }
     setLoading(false);
   };
 
-  const deleteFaq = async (idx) => {
-    if (!confirm('Opravdu smazat?')) return;
-    setLoading(true);
-    try {
-      const res = await fetch('/api/kb-manager', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-token': token,
-        },
-        body: JSON.stringify({ action: 'delete-faq', index: idx }),
-      });
-      if (res.ok) {
-        await tryLogin(token);
-        showMessage('✅ Smazáno!');
-      }
-    } catch (e) {
-      showMessage('❌ ' + e.message, 'error');
-    }
-    setLoading(false);
+  const updateCompany = (field, value) => {
+    setKB({ ...kb, company: { ...kb.company, [field]: value } });
+    setHasChanges(true);
   };
 
-  // AUTOMATICKÉ SKENOVÁNÍ WEBU
-  const scanWebsite = async () => {
-    if (!confirm('Spustit automatické skenování www.rekant.cz?\n\nPotrvá to ~30 sekund a stojí cca 0.30 Kč.')) {
+  const updateService = (key, field, value) => {
+    setKB({
+      ...kb,
+      services: {
+        ...kb.services,
+        [key]: { ...kb.services[key], [field]: value },
+      },
+    });
+    setHasChanges(true);
+  };
+
+  const updateServiceArray = (key, field, value) => {
+    const arr = value.split(',').map(s => s.trim()).filter(Boolean);
+    setKB({
+      ...kb,
+      services: {
+        ...kb.services,
+        [key]: { ...kb.services[key], [field]: arr },
+      },
+    });
+    setHasChanges(true);
+  };
+
+  const updateProduct = (key, field, value) => {
+    setKB({
+      ...kb,
+      products: {
+        ...kb.products,
+        [key]: { ...kb.products[key], [field]: value },
+      },
+    });
+    setHasChanges(true);
+  };
+
+  const updateProductFeatures = (key, value) => {
+    const features = value.split('\n').map(s => s.trim()).filter(Boolean);
+    setKB({
+      ...kb,
+      products: {
+        ...kb.products,
+        [key]: { ...kb.products[key], features },
+      },
+    });
+    setHasChanges(true);
+  };
+
+  const addFaq = () => {
+    if (!newFaq.q.trim() || !newFaq.a.trim()) {
+      showMessage('Vypln otazku i odpoved', 'error');
       return;
     }
+    setKB({
+      ...kb,
+      faq: [...(kb.faq || []), { q: newFaq.q, a: newFaq.a }],
+    });
+    setNewFaq({ q: '', a: '' });
+    setHasChanges(true);
+    showMessage('FAQ pridano (nezapomen ulozit)');
+  };
+
+  const updateFaq = (idx, field, value) => {
+    const newFaqs = [...kb.faq];
+    newFaqs[idx] = { ...newFaqs[idx], [field]: value };
+    setKB({ ...kb, faq: newFaqs });
+    setHasChanges(true);
+  };
+
+  const deleteFaq = (idx) => {
+    if (!confirm('Opravdu smazat?')) return;
+    const newFaqs = kb.faq.filter((_, i) => i !== idx);
+    setKB({ ...kb, faq: newFaqs });
+    setHasChanges(true);
+  };
+
+  const scanWebsite = async () => {
+    if (!confirm('Spustit automaticke skenovani www.rekant.cz?')) return;
     setLoading(true);
-    setScanResult(null);
-    showMessage('🔄 Skenuji obsah webu... Čekej prosím...', 'info');
+    showMessage('Skenuji obsah webu...', 'info');
 
     try {
       const res = await fetch('/api/kb-scanner', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-token': token,
-        },
+        headers: { 'x-admin-token': token },
       });
-
       const data = await res.json();
 
       if (data.success && data.kb) {
-        // Automaticky uložit do KB
         const saveRes = await fetch('/api/kb-manager', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'x-admin-token': token,
           },
-          body: JSON.stringify({
-            action: 'update-full',
-            kb: data.kb,
-          }),
+          body: JSON.stringify({ action: 'update-full', kb: data.kb }),
         });
-
         if (saveRes.ok) {
           await tryLogin(token);
-          setScanResult(data);
-          showMessage('✅ Web naskenován a KB aktualizována!', 'success');
-        } else {
-          showMessage('⚠️ Sken proběhl, ale uložení selhalo', 'error');
+          showMessage('Chat naskenoval web a naucil se!');
         }
-      } else if (data.success) {
-        await tryLogin(token);
-        setScanResult(data);
-        showMessage('✅ Web naskenován a KB aktualizována!', 'success');
       } else {
-        showMessage('❌ Chyba: ' + (data.error || 'Neznámá chyba'), 'error');
+        showMessage('Chyba: ' + (data.error || 'Neznama'), 'error');
       }
     } catch (e) {
-      showMessage('❌ ' + e.message, 'error');
+      showMessage(e.message, 'error');
     }
     setLoading(false);
   };
@@ -176,11 +201,88 @@ export default function AdminKB() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'kb-backup-' + new Date().toISOString().split('T')[0] + '.json';
+    a.download = 'kb-' + new Date().toISOString().split('T')[0] + '.json';
     a.click();
   };
 
-  // PŘIHLÁŠENÍ
+  const styles = {
+    input: {
+      width: '100%',
+      padding: '10px',
+      border: '1px solid #d1d5db',
+      borderRadius: '6px',
+      fontSize: '14px',
+      boxSizing: 'border-box',
+      fontFamily: 'inherit',
+    },
+    label: {
+      display: 'block',
+      marginBottom: '5px',
+      fontSize: '13px',
+      color: '#374151',
+      fontWeight: '600',
+    },
+    grid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+      gap: '15px',
+      marginBottom: '15px',
+    },
+    card: {
+      background: '#fff',
+      padding: '20px',
+      borderRadius: '12px',
+      border: '1px solid #e5e7eb',
+      marginBottom: '20px',
+    },
+    productCard: {
+      background: '#f9fafb',
+      padding: '20px',
+      borderRadius: '10px',
+      marginBottom: '20px',
+      borderLeft: '4px solid #cc1a1a',
+    },
+    btn: {
+      background: '#cc1a1a',
+      color: '#fff',
+      border: 'none',
+      padding: '10px 20px',
+      borderRadius: '6px',
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      fontSize: '14px',
+    },
+    btnSecondary: {
+      background: '#3b82f6',
+      color: '#fff',
+      border: 'none',
+      padding: '10px 20px',
+      borderRadius: '6px',
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      fontSize: '14px',
+    },
+    btnDanger: {
+      background: '#dc2626',
+      color: '#fff',
+      padding: '6px 14px',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '12px',
+    },
+    tab: (isActive) => ({
+      padding: '12px 20px',
+      background: isActive ? '#cc1a1a' : '#f3f4f6',
+      color: isActive ? '#fff' : '#374151',
+      border: 'none',
+      borderRadius: '8px 8px 0 0',
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      fontSize: '13px',
+    }),
+  };
+
   if (!isLoggedIn) {
     return (
       <div style={{
@@ -199,85 +301,61 @@ export default function AdminKB() {
           width: '400px',
           maxWidth: '90%',
         }}>
-          <h2 style={{ marginTop: 0, color: '#cc1a1a' }}>🔐 Knowledge Base Admin</h2>
-          <p style={{ color: '#666', fontSize: '14px' }}>Zadej admin token pro přihlášení</p>
+          <h2 style={{ marginTop: 0, color: '#cc1a1a' }}>KB Admin Panel</h2>
+          <p style={{ color: '#666', fontSize: '14px' }}>Zadej admin token</p>
           <input
             type="password"
-            placeholder="Admin token..."
+            placeholder="Token..."
             value={token}
             onChange={(e) => setToken(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-            style={{
-              width: '100%',
-              padding: '12px',
-              border: '1px solid #d1d5db',
-              borderRadius: '8px',
-              fontSize: '14px',
-              marginBottom: '15px',
-              boxSizing: 'border-box',
-            }}
+            style={{ ...styles.input, marginBottom: '15px' }}
           />
-          <button
-            onClick={handleLogin}
-            style={{
-              width: '100%',
-              padding: '12px',
-              background: '#cc1a1a',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '14px',
-            }}
-          >
-            Přihlásit se
+          <button onClick={handleLogin} style={{ ...styles.btn, width: '100%' }}>
+            Prihlasit se
           </button>
         </div>
       </div>
     );
   }
 
-  if (!kb) {
-    return <div style={{ padding: '40px', textAlign: 'center' }}>Načítám...</div>;
-  }
+  if (!kb) return <div style={{ padding: '40px', textAlign: 'center' }}>Nacitam...</div>;
 
   return (
     <div style={{
-      maxWidth: '1100px',
+      maxWidth: '1200px',
       margin: '0 auto',
       padding: '20px',
       fontFamily: 'system-ui, sans-serif',
     }}>
-      {/* HEADER */}
       <div style={{
+        position: 'sticky',
+        top: 0,
+        background: '#fff',
+        padding: '15px 0',
+        marginBottom: '20px',
+        borderBottom: '2px solid #e5e7eb',
+        zIndex: 100,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '20px',
-        paddingBottom: '15px',
-        borderBottom: '2px solid #e5e7eb',
       }}>
-        <h1 style={{ margin: 0, color: '#cc1a1a' }}>🤖 KB Admin Panel</h1>
-        <button
-          onClick={handleLogout}
-          style={{
-            background: '#666',
-            color: '#fff',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: '6px',
-            cursor: 'pointer',
-          }}
-        >
-          Odhlásit
-        </button>
+        <h1 style={{ margin: 0, color: '#cc1a1a', fontSize: '24px' }}>KB Admin Panel</h1>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {hasChanges && (
+            <button onClick={saveKB} disabled={loading} style={{ ...styles.btn, background: '#16a34a' }}>
+              Ulozit zmeny
+            </button>
+          )}
+          <button onClick={handleLogout} style={{ ...styles.btn, background: '#666' }}>
+            Odhlasit
+          </button>
+        </div>
       </div>
 
-      {/* MESSAGE */}
       {message && (
         <div style={{
-          padding: '14px',
+          padding: '12px 16px',
           marginBottom: '20px',
           borderRadius: '8px',
           background: message.type === 'error' ? '#fee2e2' : message.type === 'info' ? '#dbeafe' : '#dcfce7',
@@ -288,20 +366,17 @@ export default function AdminKB() {
         </div>
       )}
 
-      {/* HLAVNÍ TLAČÍTKO - AUTOMATICKÉ SKENOVÁNÍ */}
       <div style={{
         background: 'linear-gradient(135deg, #cc1a1a 0%, #9b1313 100%)',
         color: '#fff',
-        padding: '30px',
+        padding: '24px',
         borderRadius: '12px',
-        marginBottom: '30px',
+        marginBottom: '20px',
         textAlign: 'center',
       }}>
-        <h2 style={{ margin: '0 0 10px 0', fontSize: '24px' }}>
-          🚀 Automatické učení chatu
-        </h2>
-        <p style={{ margin: '0 0 20px 0', opacity: 0.9 }}>
-          Klikni a chat se automaticky naučí všechny informace z www.rekant.cz
+        <h2 style={{ margin: '0 0 8px 0' }}>Automaticke uceni chatu z webu</h2>
+        <p style={{ margin: '0 0 15px 0', opacity: 0.9, fontSize: '14px' }}>
+          Klikni a chat automaticky stahne a nauci se obsah www.rekant.cz
         </p>
         <button
           onClick={scanWebsite}
@@ -310,191 +385,227 @@ export default function AdminKB() {
             background: '#fff',
             color: '#cc1a1a',
             border: 'none',
-            padding: '16px 32px',
+            padding: '12px 28px',
             borderRadius: '8px',
             cursor: loading ? 'not-allowed' : 'pointer',
             fontWeight: 'bold',
-            fontSize: '16px',
+            fontSize: '15px',
             opacity: loading ? 0.5 : 1,
           }}
         >
-          {loading ? '🔄 Skenuji a učím chat...' : '🔄 Aktualizovat znalosti z webu'}
+          {loading ? 'Skenuji...' : 'Aktualizovat znalosti z webu'}
         </button>
-        {scanResult && scanResult.tokensUsed && (
-          <p style={{ margin: '15px 0 0 0', fontSize: '13px', opacity: 0.8 }}>
-            ✅ Použito {scanResult.tokensUsed.input_tokens} input + {scanResult.tokensUsed.output_tokens} output tokenů
-          </p>
-        )}
       </div>
 
-      {/* ZÁLOŽKY */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', borderBottom: '2px solid #e5e7eb' }}>
-        {['faq', 'company', 'preview'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            style={{
-              padding: '12px 24px',
-              background: activeTab === tab ? '#cc1a1a' : '#f3f4f6',
-              color: activeTab === tab ? '#fff' : '#374151',
-              border: 'none',
-              borderRadius: '8px 8px 0 0',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '14px',
-            }}
-          >
-            {tab === 'faq' && '❓ FAQ'}
-            {tab === 'company' && '🏢 Firma'}
-            {tab === 'preview' && '👁️ Náhled KB'}
-          </button>
-        ))}
+      <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', borderBottom: '2px solid #e5e7eb', flexWrap: 'wrap' }}>
+        <button onClick={() => setActiveTab('company')} style={styles.tab(activeTab === 'company')}>Firma</button>
+        <button onClick={() => setActiveTab('services')} style={styles.tab(activeTab === 'services')}>Sluzby</button>
+        <button onClick={() => setActiveTab('products')} style={styles.tab(activeTab === 'products')}>Produkty</button>
+        <button onClick={() => setActiveTab('faq')} style={styles.tab(activeTab === 'faq')}>FAQ ({kb.faq?.length || 0})</button>
+        <button onClick={() => setActiveTab('preview')} style={styles.tab(activeTab === 'preview')}>Nahled</button>
       </div>
 
-      {/* FAQ TAB */}
+      {activeTab === 'company' && kb.company && (
+        <div style={styles.card}>
+          <h3>Informace o firme</h3>
+          <div style={styles.grid}>
+            <div>
+              <label style={styles.label}>Nazev firmy</label>
+              <input type="text" value={kb.company.name || ''} onChange={(e) => updateCompany('name', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>Slogan</label>
+              <input type="text" value={kb.company.tagline || ''} onChange={(e) => updateCompany('tagline', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>Adresa</label>
+              <input type="text" value={kb.company.address || ''} onChange={(e) => updateCompany('address', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>Telefon (ustredna)</label>
+              <input type="text" value={kb.company.phone || ''} onChange={(e) => updateCompany('phone', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>Telefon (prodejna)</label>
+              <input type="text" value={kb.company.phone_shop || ''} onChange={(e) => updateCompany('phone_shop', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>Telefon (servis)</label>
+              <input type="text" value={kb.company.phone_service || ''} onChange={(e) => updateCompany('phone_service', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>Email</label>
+              <input type="text" value={kb.company.email || ''} onChange={(e) => updateCompany('email', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>Email (servis)</label>
+              <input type="text" value={kb.company.email_service || ''} onChange={(e) => updateCompany('email_service', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>Pracovni doba</label>
+              <input type="text" value={kb.company.hours || ''} onChange={(e) => updateCompany('hours', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>ICO</label>
+              <input type="text" value={kb.company.ico || ''} onChange={(e) => updateCompany('ico', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>DIC</label>
+              <input type="text" value={kb.company.vat || ''} onChange={(e) => updateCompany('vat', e.target.value)} style={styles.input} />
+            </div>
+            <div>
+              <label style={styles.label}>Datova schranka</label>
+              <input type="text" value={kb.company.databox || ''} onChange={(e) => updateCompany('databox', e.target.value)} style={styles.input} />
+            </div>
+          </div>
+          <div>
+            <label style={styles.label}>Popis firmy</label>
+            <textarea
+              value={kb.company.description || ''}
+              onChange={(e) => updateCompany('description', e.target.value)}
+              style={{ ...styles.input, minHeight: '100px' }}
+            />
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'services' && kb.services && (
+        <div>
+          {Object.entries(kb.services).map(([key, service]) => (
+            <div key={key} style={styles.productCard}>
+              <h3 style={{ marginTop: 0, color: '#cc1a1a' }}>
+                {service.name || key}
+              </h3>
+              <div style={styles.grid}>
+                <div>
+                  <label style={styles.label}>Nazev</label>
+                  <input type="text" value={service.name || ''} onChange={(e) => updateService(key, 'name', e.target.value)} style={styles.input} />
+                </div>
+                <div>
+                  <label style={styles.label}>Znacky (oddelene carkou)</label>
+                  <input
+                    type="text"
+                    value={(service.brands || []).join(', ')}
+                    onChange={(e) => updateServiceArray(key, 'brands', e.target.value)}
+                    style={styles.input}
+                    placeholder="Jablotron, Dahua, Hikvision"
+                  />
+                </div>
+              </div>
+              <div>
+                <label style={styles.label}>Popis sluzby</label>
+                <textarea value={service.description || ''} onChange={(e) => updateService(key, 'description', e.target.value)} style={{ ...styles.input, minHeight: '60px' }} />
+              </div>
+              {service.rental_info !== undefined && (
+                <div style={{ marginTop: '10px' }}>
+                  <label style={styles.label}>Info o pronajmu</label>
+                  <input type="text" value={service.rental_info || ''} onChange={(e) => updateService(key, 'rental_info', e.target.value)} style={styles.input} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'products' && kb.products && (
+        <div>
+          {Object.entries(kb.products).map(([key, product]) => (
+            <div key={key} style={styles.productCard}>
+              <h3 style={{ marginTop: 0, color: '#cc1a1a' }}>
+                {product.name || key}
+              </h3>
+              <div style={styles.grid}>
+                <div>
+                  <label style={styles.label}>Nazev produktu</label>
+                  <input type="text" value={product.name || ''} onChange={(e) => updateProduct(key, 'name', e.target.value)} style={styles.input} />
+                </div>
+                <div>
+                  <label style={styles.label}>Kategorie</label>
+                  <input type="text" value={product.category || ''} onChange={(e) => updateProduct(key, 'category', e.target.value)} style={styles.input} />
+                </div>
+                <div>
+                  <label style={styles.label}>Typ produktu</label>
+                  <input type="text" value={product.type || ''} onChange={(e) => updateProduct(key, 'type', e.target.value)} style={styles.input} />
+                </div>
+                <div>
+                  <label style={styles.label}>Cena/info</label>
+                  <input type="text" value={product.rental || product.info || ''} onChange={(e) => updateProduct(key, product.rental ? 'rental' : 'info', e.target.value)} style={styles.input} />
+                </div>
+              </div>
+              <div>
+                <label style={styles.label}>Popis</label>
+                <textarea value={product.description || ''} onChange={(e) => updateProduct(key, 'description', e.target.value)} style={{ ...styles.input, minHeight: '60px' }} />
+              </div>
+              <div style={{ marginTop: '10px' }}>
+                <label style={styles.label}>Funkce/vlastnosti (kazda na novem radku)</label>
+                <textarea
+                  value={(product.features || []).join('\n')}
+                  onChange={(e) => updateProductFeatures(key, e.target.value)}
+                  style={{ ...styles.input, minHeight: '120px' }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {activeTab === 'faq' && (
-        <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-          <h3>➕ Přidat novou FAQ otázku</h3>
+        <div style={styles.card}>
+          <h3>Pridat nove FAQ</h3>
           <input
             type="text"
-            placeholder="Otázka..."
+            placeholder="Otazka..."
             value={newFaq.q}
             onChange={(e) => setNewFaq({ ...newFaq, q: e.target.value })}
-            style={{
-              width: '100%',
-              padding: '10px',
-              border: '1px solid #d1d5db',
-              borderRadius: '6px',
-              marginBottom: '10px',
-              boxSizing: 'border-box',
-            }}
+            style={{ ...styles.input, marginBottom: '10px' }}
           />
           <textarea
-            placeholder="Odpověď..."
+            placeholder="Odpoved..."
             value={newFaq.a}
             onChange={(e) => setNewFaq({ ...newFaq, a: e.target.value })}
-            style={{
-              width: '100%',
-              padding: '10px',
-              border: '1px solid #d1d5db',
-              borderRadius: '6px',
-              marginBottom: '10px',
-              minHeight: '80px',
-              boxSizing: 'border-box',
-            }}
+            style={{ ...styles.input, marginBottom: '10px', minHeight: '80px' }}
           />
-          <button
-            onClick={addFaq}
-            disabled={loading}
-            style={{
-              background: '#16a34a',
-              color: '#fff',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-            }}
-          >
-            ➕ Přidat FAQ
-          </button>
+          <button onClick={addFaq} style={{ ...styles.btn, background: '#16a34a' }}>Pridat FAQ</button>
 
-          <h3 style={{ marginTop: '30px' }}>📋 Existující FAQ ({kb.faq?.length || 0})</h3>
-          {kb.faq && kb.faq.length > 0 ? (
-            kb.faq.map((item, idx) => (
-              <div key={idx} style={{
-                background: '#f9fafb',
-                padding: '12px',
-                borderRadius: '6px',
-                marginBottom: '10px',
-                borderLeft: '3px solid #cc1a1a',
-              }}>
-                <strong>Q: {item.q}</strong>
-                <p style={{ margin: '5px 0', color: '#666' }}>A: {item.a}</p>
-                <button
-                  onClick={() => deleteFaq(idx)}
-                  style={{
-                    background: '#dc2626',
-                    color: '#fff',
-                    padding: '4px 10px',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                  }}
-                >
-                  🗑 Smazat
-                </button>
-              </div>
-            ))
-          ) : (
-            <p style={{ color: '#666' }}>Žádné FAQ.</p>
-          )}
+          <h3 style={{ marginTop: '30px' }}>Existujici FAQ ({kb.faq?.length || 0})</h3>
+          {kb.faq?.map((item, idx) => (
+            <div key={idx} style={{ ...styles.productCard, marginBottom: '15px' }}>
+              <label style={styles.label}>Otazka {idx + 1}</label>
+              <input
+                type="text"
+                value={item.q}
+                onChange={(e) => updateFaq(idx, 'q', e.target.value)}
+                style={{ ...styles.input, marginBottom: '8px' }}
+              />
+              <label style={styles.label}>Odpoved</label>
+              <textarea
+                value={item.a}
+                onChange={(e) => updateFaq(idx, 'a', e.target.value)}
+                style={{ ...styles.input, marginBottom: '10px', minHeight: '60px' }}
+              />
+              <button onClick={() => deleteFaq(idx)} style={styles.btnDanger}>Smazat</button>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* COMPANY TAB */}
-      {activeTab === 'company' && kb.company && (
-        <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-          <h3>🏢 Informace o firmě</h3>
-          <pre style={{
-            background: '#f9fafb',
-            padding: '15px',
-            borderRadius: '6px',
-            overflow: 'auto',
-            fontSize: '13px',
-          }}>
-            {JSON.stringify(kb.company, null, 2)}
-          </pre>
-        </div>
-      )}
-
-      {/* PREVIEW TAB */}
       {activeTab === 'preview' && (
-        <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-          <h3>👁️ Celý obsah Knowledge Base</h3>
-          <pre style={{
-            background: '#f9fafb',
-            padding: '15px',
-            borderRadius: '6px',
-            overflow: 'auto',
-            fontSize: '12px',
-            maxHeight: '500px',
-          }}>
+        <div style={styles.card}>
+          <h3>Nahled KB (JSON)</h3>
+          <pre style={{ background: '#f9fafb', padding: '15px', borderRadius: '6px', overflow: 'auto', fontSize: '12px', maxHeight: '600px' }}>
             {JSON.stringify(kb, null, 2)}
           </pre>
         </div>
       )}
 
-      {/* TLAČÍTKO EXPORT */}
-      <div style={{ textAlign: 'center', marginTop: '30px' }}>
-        <button
-          onClick={exportKB}
-          style={{
-            background: '#3b82f6',
-            color: '#fff',
-            border: 'none',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-          }}
-        >
-          ⬇️ Stáhnout zálohu KB (JSON)
-        </button>
+      <div style={{ textAlign: 'center', marginTop: '30px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        {hasChanges && (
+          <button onClick={saveKB} disabled={loading} style={{ ...styles.btn, background: '#16a34a', padding: '14px 30px', fontSize: '16px' }}>
+            Ulozit vsechny zmeny
+          </button>
+        )}
+        <button onClick={exportKB} style={styles.btnSecondary}>Stahnout zalohu</button>
       </div>
-
-      {/* INFO */}
-      <p style={{ textAlign: 'center', marginTop: '30px', color: '#666', fontSize: '12px' }}>
-        🤖 Chat se učí z této KB. Změny se projeví okamžitě.
-      </p>
     </div>
   );
-}
-
-// Vypnout SSR aby fungovalo na Vercelu
-export async function getServerSideProps() {
-  return {
-    props: {},
-  };
 }
