@@ -283,7 +283,8 @@ footer{background:var(--navy);color:rgba(255,255,255,.7);padding:52px 20px 24px}
 .modal-box{background:#fff;border-radius:16px;padding:28px 24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .editor-box{max-width:660px;max-height:92vh;overflow-y:auto;margin-top:8px;align-items:flex-start}
 
-@media(max-width:960px){
+/* DESKTOP L → TABLET */
+@media(max-width:1024px){
   .hero-in,.dark-grid,.ft-grid{grid-template-columns:1fr}
   .split-grid{grid-template-columns:1fr!important}
   .hero-in .hero-cards{order:-1}
@@ -296,11 +297,136 @@ footer{background:var(--navy);color:rgba(255,255,255,.7);padding:52px 20px 24px}
   .fitem{border-right:none;border-bottom:1px solid var(--bl);max-width:none}
   .fitem:last-child{border-bottom:none}
 }
+
+/* TABLET */
+@media(max-width:768px){
+  .tb-links{gap:10px}
+  .tb-links span,.tb-links a{font-size:11.5px}
+  .hero{padding:48px 20px 40px}
+  .hero-tagline-text{font-size:32px}
+  .hero h1{font-size:32px;line-height:1.2}
+  .hero-lead{font-size:15px;margin-bottom:20px}
+  .hero-btns{gap:10px;flex-direction:column}
+  .btn-red,.btn-outline{width:100%;justify-content:center;font-size:14px;padding:11px 20px}
+  .hero-stats{gap:24px;margin-top:24px;padding-top:20px}
+  .stat-n{font-size:28px}
+  .stat-l{font-size:11px}
+  .hero-cards{grid-template-columns:1fr}
+  .hcard{padding:16px 14px}
+  .hcard-title{font-size:14px}
+  .hcard-sub{font-size:11px}
+  .hcard-img{height:75px}
+  .fitem{padding:14px 18px;gap:9px}
+  .fitem strong{font-size:12px}
+  .fitem span{font-size:10.5px}
+  .brands-row{gap:8px}
+  .brand-pill{min-width:90px;padding:8px 14px;height:48px}
+  .brand-pill img{max-height:28px}
+  .split-grid,.ref-grid,.proc-row{grid-template-columns:1fr}
+  .quote-tiles{grid-template-columns:1fr}
+}
+
+/* MOBIL LANDSCAPE & TABLET SMALL */
 @media(max-width:600px){
-  .hero h1{font-size:28px}
+  /* Topbar */
+  .topbar{padding:6px 15px}
+  .tb-in{gap:6px}
+  .tb-links{gap:12px}
+  .tb-links span,.tb-links a{font-size:10.5px;gap:3px}
+  .tb-badge{padding:1px 8px;font-size:9px}
+  
+  /* Header */
+  .hd-in{padding:10px 15px;height:56px}
+  .logo-img{height:40px;margin-right:12px}
+  .btn-red{display:none}
+  
+  /* Hero */
+  .hero{padding:40px 15px 30px;border-bottom:2px solid var(--bl)}
+  .hero::before{width:70%;opacity:0.4}
+  .hero-tagline{margin-bottom:16px}
+  .hero-tagline-text{font-size:26px;line-height:1.1;letter-spacing:-.3px}
+  .hero h1{font-size:24px;line-height:1.15;margin-bottom:14px}
+  .hero-lead{font-size:14px;line-height:1.5;margin-bottom:16px;max-width:100%}
+  .hero-btns{flex-direction:column;gap:9px}
+  .btn-red,.btn-outline{width:100%;padding:11px 16px;font-size:13px;border-radius:6px}
+  .hero-stats{flex-direction:column;gap:16px;margin-top:18px;padding-top:16px;border-top:1px solid var(--bl)}
+  .stat-n{font-size:24px}
+  .stat-l{font-size:10px;margin-top:3px}
+  .hero-cards{grid-template-columns:1fr;gap:10px}
+  .hcard{padding:13px 12px}
+  .hcard-logo{height:18px;margin-bottom:7px}
+  .hcard-ico{font-size:22px;margin-bottom:7px}
+  .hcard-title{font-size:12.5px;margin-bottom:2px;font-weight:700}
+  .hcard-sub{font-size:10px;line-height:1.4}
+  .hcard-badge{padding:1px 6px;font-size:8px;margin-top:6px}
+  .hcard-img{height:65px;margin:5px 0 2px}
+  
+  /* Features bar */
+  .fbar{border-bottom:2px solid var(--bl)}
+  .fbar-in{flex-direction:column;gap:0}
+  .fitem{border-right:none;border-bottom:1px solid var(--bl);max-width:none;padding:12px 15px;gap:10px}
+  .fitem:last-child{border-bottom:none}
+  .fitem-ico{width:32px;height:32px;font-size:15px}
+  .fitem strong{font-size:12px;display:block}
+  .fitem span{font-size:10px;display:block;margin-top:2px}
+  
+  /* Brands */
+  .brands{padding:18px 15px}
+  .brands-lbl{font-size:10px;margin-bottom:12px;letter-spacing:.8px}
+  .brands-row{gap:6px}
+  .brand-pill{min-width:78px;padding:6px 10px;height:44px;font-size:10px}
+  .brand-pill img{max-height:24px;max-width:68px}
+  
+  /* Global grids */
   .hero-cards,.sd-cards,.frow,.split-grid,.ref-grid,.proc-row,.quote-tiles{grid-template-columns:1fr}
-  .brands-row{gap:5px}
-  .brand-pill{min-width:88px;padding:7px 12px;height:50px}
+  .split-grid{padding:0 15px!important}
+}
+
+/* MALÝ MOBIL */
+@media(max-width:480px){
+  /* Topbar */
+  .topbar{padding:5px 12px;font-size:9px}
+  .tb-in{flex-direction:column;gap:4px}
+  .tb-links{gap:10px;font-size:9px}
+  .tb-links span,.tb-links a{font-size:9px;gap:2px}
+  
+  /* Header */
+  .hd-in{padding:8px 12px;height:48px}
+  .logo-img{height:34px;margin-right:10px}
+  .mob-btn{width:36px;height:36px}
+  
+  /* Hero */
+  .hero{padding:30px 12px 22px}
+  .hero::before{opacity:0.25;width:80%}
+  .hero-tagline{margin-bottom:12px}
+  .hero-tagline-line{gap:10px;margin-bottom:4px}
+  .hero-tagline-text{font-size:22px;letter-spacing:-.4px}
+  .hero h1{font-size:20px;line-height:1.15;margin-bottom:10px}
+  .hero-lead{font-size:13px;line-height:1.5;margin-bottom:12px}
+  .hero-btns{gap:8px}
+  .btn-red,.btn-outline{padding:10px 14px;font-size:12px}
+  .hero-stats{gap:12px;margin-top:14px;padding-top:12px}
+  .stat-n{font-size:20px}
+  .stat-l{font-size:9px}
+  .hero-cards{gap:8px}
+  .hcard{padding:11px 10px;border-radius:10px}
+  .hcard-logo{height:16px;margin-bottom:6px}
+  .hcard-ico{font-size:20px;margin-bottom:6px}
+  .hcard-title{font-size:12px}
+  .hcard-sub{font-size:9.5px}
+  .hcard-img{height:60px}
+  
+  /* Features bar */
+  .fitem{padding:10px 12px;gap:8px}
+  .fitem-ico{width:28px;height:28px;font-size:13px}
+  .fitem strong{font-size:11px}
+  .fitem span{font-size:9px}
+  
+  /* Brands */
+  .brands{padding:14px 12px}
+  .brands-lbl{font-size:9px;margin-bottom:10px;letter-spacing:.5px}
+  .brand-pill{min-width:70px;padding:5px 8px;height:40px;font-size:9px}
+  .brand-pill img{max-height:22px;max-width:64px}
 }
 </style>
 </head>
