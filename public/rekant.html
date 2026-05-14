@@ -6,6 +6,19 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="REKANT s.r.o. - profesionální prodej a servis kancelářské techniky (Konica Minolta, Brother, Canon), bezpečnostních systémů (Jablotron, Dahua, Hikvision) a docházkových řešení v Praze.">
+<meta name="keywords" content="kancelářská technika, kopírka, tiskárna, bezpečnostní systém, dohledový systém, docházkový systém, servis, Praha">
+<meta name="author" content="REKANT s.r.o.">
+<meta name="robots" content="index, follow">
+<meta name="language" content="cs">
+<meta property="og:title" content="REKANT s.r.o. | Kancelářská technika · Zabezpečení · Praha">
+<meta property="og:description" content="REKANT s.r.o. - profesionální prodej a servis kancelářské techniky, bezpečnostních a docházkových systémů v Praze.">
+<meta property="og:type" content="business.business">
+<meta property="og:locale" content="cs_CZ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="REKANT s.r.o.">
+<meta name="twitter:description" content="Profesionální prodej a servis kancelářské techniky, bezpečnostních a docházkových systémů.">
+<link rel="canonical" href="https://rekant.cz/">
 <title>REKANT s.r.o. | Kancelářská technika · Zabezpečení · Praha</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -283,8 +296,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.7);padding:52px 20px 24px}
 .modal-box{background:#fff;border-radius:16px;padding:28px 24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .editor-box{max-width:660px;max-height:92vh;overflow-y:auto;margin-top:8px;align-items:flex-start}
 
-/* DESKTOP L → TABLET */
-@media(max-width:1024px){
+@media(max-width:960px){
   .hero-in,.dark-grid,.ft-grid{grid-template-columns:1fr}
   .split-grid{grid-template-columns:1fr!important}
   .hero-in .hero-cards{order:-1}
@@ -297,142 +309,11 @@ footer{background:var(--navy);color:rgba(255,255,255,.7);padding:52px 20px 24px}
   .fitem{border-right:none;border-bottom:1px solid var(--bl);max-width:none}
   .fitem:last-child{border-bottom:none}
 }
-
-/* TABLET */
-@media(max-width:768px){
-  .tb-links{gap:10px}
-  .tb-links span,.tb-links a{font-size:11.5px}
-  .hero{padding:48px 20px 40px}
-  .hero-tagline-text{font-size:32px}
-  .hero h1{font-size:32px;line-height:1.2}
-  .hero-lead{font-size:15px;margin-bottom:20px}
-  .hero-btns{gap:10px;flex-direction:column}
-  .btn-red,.btn-outline{width:100%;justify-content:center;font-size:14px;padding:11px 20px}
-  .hero-stats{gap:24px;margin-top:24px;padding-top:20px}
-  .stat-n{font-size:28px}
-  .stat-l{font-size:11px}
-  .hero-cards{grid-template-columns:1fr}
-  .hcard{padding:16px 14px}
-  .hcard-title{font-size:14px}
-  .hcard-sub{font-size:11px}
-  .hcard-img{height:75px}
-  .fitem{padding:14px 18px;gap:9px}
-  .fitem strong{font-size:12px}
-  .fitem span{font-size:10.5px}
-  .brands-row{gap:8px}
-  .brand-pill{min-width:90px;padding:8px 14px;height:48px}
-  .brand-pill img{max-height:28px}
-  .split-grid,.ref-grid,.proc-row{grid-template-columns:1fr}
-  .quote-tiles{grid-template-columns:1fr}
-}
-
-/* MOBIL LANDSCAPE & TABLET SMALL */
 @media(max-width:600px){
-  /* Topbar */
-  .topbar{padding:6px 15px}
-  .tb-in{gap:6px}
-  .tb-links{gap:12px}
-  .tb-links span,.tb-links a{font-size:10.5px;gap:3px}
-  .tb-badge{padding:1px 8px;font-size:9px}
-  
-  /* Header */
-  .hd-in{padding:10px 15px;height:56px}
-  .logo-img{height:40px;margin-right:12px}
-  .btn-red{display:none}
-  
-  /* Hero */
-  .hero{padding:40px 15px 30px;border-bottom:2px solid var(--bl)}
-  .hero::before{width:70%;opacity:0.4}
-  .hero-in{display:flex;flex-direction:column;gap:24px;align-items:stretch}
-  .hero-tagline{margin-bottom:12px}
-  .hero-tagline{margin-bottom:12px}
-  .hero-tagline-line{gap:10px;margin-bottom:4px}
-  .hero-tagline-bar{height:32px!important}
-  .hero-tagline-text{font-size:22px;line-height:1.1;letter-spacing:-.3px}
-  .hero h1{font-size:22px;line-height:1.15;margin-bottom:12px;margin-top:0}
-  .hero-lead{font-size:13px;line-height:1.5;margin-bottom:14px;max-width:100%}
-  .hero-btns{flex-direction:column;gap:8px}
-  .btn-red,.btn-outline{width:100%;padding:11px 16px;font-size:13px;border-radius:6px;margin-left:0}
-  .hero-stats{flex-direction:row;gap:12px;margin-top:16px;padding-top:12px;border-top:1px solid var(--bl);flex-wrap:wrap;font-size:12px}
-  .stat-n{font-size:20px}
-  .stat-l{font-size:9px;margin-top:2px}
-  .hero-cards{grid-template-columns:1fr;gap:10px;margin-top:0}
-  .hcard{padding:12px 10px;border-radius:10px}
-  .hcard-logo{height:16px;margin-bottom:6px}
-  .hcard-ico{font-size:20px;margin-bottom:6px}
-  .hcard-title{font-size:12px;margin-bottom:2px}
-  .hcard-sub{font-size:9px;line-height:1.3}
-  .hcard-badge{padding:1px 6px;font-size:7px;margin-top:4px}
-  .hcard-img{height:60px;margin:4px 0 1px}
-  
-  /* Features bar */
-  .fbar{border-bottom:2px solid var(--bl)}
-  .fbar-in{flex-direction:column;gap:0}
-  .fitem{border-right:none;border-bottom:1px solid var(--bl);max-width:none;padding:12px 15px;gap:10px}
-  .fitem:last-child{border-bottom:none}
-  .fitem-ico{width:32px;height:32px;font-size:15px}
-  .fitem strong{font-size:12px;display:block}
-  .fitem span{font-size:10px;display:block;margin-top:2px}
-  
-  /* Brands */
-  .brands{padding:18px 15px}
-  .brands-lbl{font-size:10px;margin-bottom:12px;letter-spacing:.8px}
-  .brands-row{gap:6px}
-  .brand-pill{min-width:78px;padding:6px 10px;height:44px;font-size:10px}
-  .brand-pill img{max-height:24px;max-width:68px}
-  
-  /* Global grids */
+  .hero h1{font-size:28px}
   .hero-cards,.sd-cards,.frow,.split-grid,.ref-grid,.proc-row,.quote-tiles{grid-template-columns:1fr}
-  .split-grid{padding:0 15px!important}
-}
-
-/* MALÝ MOBIL */
-@media(max-width:480px){
-  /* Topbar */
-  .topbar{padding:5px 12px;font-size:9px}
-  .tb-in{flex-direction:column;gap:4px}
-  .tb-links{gap:10px;font-size:9px}
-  .tb-links span,.tb-links a{font-size:9px;gap:2px}
-  
-  /* Header */
-  .hd-in{padding:8px 12px;height:48px}
-  .logo-img{height:34px;margin-right:10px}
-  .mob-btn{width:36px;height:36px}
-  
-  /* Hero */
-  .hero{padding:28px 12px 20px}
-  .hero::before{opacity:0.2;width:80%}
-  .hero-in{display:flex;flex-direction:column;gap:18px}
-  .hero-tagline{margin-bottom:8px}
-  .hero-tagline-line{gap:8px;margin-bottom:3px}
-  .hero-tagline-bar{height:24px!important}
-  .hero-tagline-text{font-size:18px;letter-spacing:-.3px}
-  .hero h1{font-size:18px;line-height:1.1;margin-bottom:8px}
-  .hero-lead{font-size:12px;line-height:1.4;margin-bottom:10px}
-  .hero-btns{gap:6px;flex-direction:column}
-  .btn-red,.btn-outline{padding:9px 12px;font-size:11px;margin-left:0}
-  .hero-stats{gap:8px;margin-top:10px;padding-top:8px}
-  .stat-n{font-size:18px}
-  .stat-l{font-size:8px}
-  .hero-cards{gap:7px}
-  .hcard{padding:10px 8px;border-radius:8px}
-  .hcard-logo{height:14px;margin-bottom:4px}
-  .hcard-ico{font-size:18px;margin-bottom:4px}
-  .hcard-title{font-size:11px}
-  .hcard-sub{font-size:8px}
-  .hcard-img{height:50px}
-  
-  /* Features bar */
-  .fitem{padding:10px 12px;gap:8px}
-  .fitem-ico{width:28px;height:28px;font-size:13px}
-  .fitem strong{font-size:11px}
-  .fitem span{font-size:9px}
-  
-  /* Brands */
-  .brands{padding:14px 12px}
-  .brands-lbl{font-size:9px;margin-bottom:10px}
-  .brand-pill{min-width:68px;padding:5px 8px;height:40px;font-size:9px}
-  .brand-pill img{max-height:22px;max-width:62px}
+  .brands-row{gap:5px}
+  .brand-pill{min-width:88px;padding:7px 12px;height:50px}
 }
 </style>
 </head>
@@ -3122,4 +3003,3 @@ function addChatMessage(role, text) {
 </script>
 </body>
 </html>
-
