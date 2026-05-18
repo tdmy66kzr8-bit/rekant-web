@@ -2592,7 +2592,7 @@ function checkM() {
 function loginCms() {
   if(!document.getElementById('cms-cap').textContent.includes('✅'))if(!checkM())return;
   if(document.getElementById('cms-pw').value==='Rekant2026!'){
-    localStorage.setItem('cmsAuth','1');closeCms();openEditor(null);updateCmsBars();renderAll();
+    localStorage.setItem('cmsAuth','1');closeCms();updateCmsBars();renderNewsAll();
   }else{
     const err=document.getElementById('cms-err');err.style.display='block';err.textContent='⚠️ Nesprávné heslo.';
   }
