@@ -9,10 +9,6 @@ const nextConfig = {
     return {
       beforeFiles: [
         {
-          source: '/admin',
-          destination: '/admin/index.html',
-        },
-        {
           source: '/',
           destination: '/rekant.html',
         },
