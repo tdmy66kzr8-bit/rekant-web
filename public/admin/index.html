@@ -1018,7 +1018,7 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
           <span style="display:inline-block;width:32px;height:3px;background:var(--red)"></span>
           <span style="font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--red);text-transform:uppercase">Výhodná nabídka</span>
         </div>
-        <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5vw,44px);font-weight:900;color:var(--navy);margin-bottom:16px">Levné a použité stroje</h1>
+        <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5vw,44px);font-weight:900;color:var(--navy);margin-bottom:16px">Levné krátkodobě použité stroje</h1>
         <div style="max-width:720px;font-size:15px;color:var(--g600);line-height:1.7">
           <p style="margin-bottom:10px">Nabízíme stroje z ukončených krátkodobých pronájmů — plně funkční zařízení v dobrém stavu za výrazně nižší cenu než nové. Každý stroj prochází naší servisní kontrolou.</p>
           <p>Jde o mix různých značek a modelů — tiskárny, multifunkce, kopírky. Zásoby se průběžně mění. Pokud hledáte konkrétní typ, neváhejte nás kontaktovat.</p>
@@ -1841,9 +1841,9 @@ document.addEventListener("DOMContentLoaded", function() {
   ['hik-logo'].forEach(id => { const e=document.getElementById(id); if(e) e.src=L.hikvision; });
   const cam = document.getElementById('hc-cam'); if(cam) cam.src=L.dahuaCam;
 
-  // Načti data ze serveru (JSON soubory) — přepíší localStorage pokud existují
+  // Načti data ze serveru (API endpoints nebo JSON soubory) — přepíší localStorage pokud existují
   Promise.allSettled([
-    fetch('/data/news.json').then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch('/api/get-news').then(r=>r.ok?r.json():null).catch(()=>fetch('/data/news.json').then(r=>r.ok?r.json():null).catch(()=>null)),
     fetch('/data/used-machines.json').then(r=>r.ok?r.json():null).catch(()=>null),
   ]).then(([newsRes, usedRes]) => {
     if(newsRes.value && Array.isArray(newsRes.value)){
@@ -2387,9 +2387,23 @@ function newsCard(n, ed) {
 const auth = () => localStorage.getItem('cmsAuth')==='1';
 function renderNewsPreview() { document.getElementById('news-preview').innerHTML = NEWS.slice(0,3).map(n=>newsCard(n,false)).join(''); }
 function renderNewsAll() {
-  // Fallback: pokud NEWS je prázdný, použij NEWS_DEFAULT
+  // Fallback: pokud NEWS je prázdný, zkusit načíst z /data/news.json znovu
+  if(!NEWS || NEWS.length === 0) {
+    fetch('/data/news.json').then(r=>r.json()).then(data=>{
+      if(Array.isArray(data)) {
+        NEWS = data;
+        newsSave(); // Ulož do localStorage jako backup
+        renderNewsAll(); // Rerender
+        return;
+      }
+    }).catch(e => {
+      NEWS = newsLoad(); // Fallback na localStorage
+    });
+  }
+  
+  // Fallback: pokud NEWS je stále prázdný, použij NEWS_DEFAULT
   const newsToRender = NEWS && NEWS.length > 0 ? NEWS : NEWS_DEFAULT;
-  console.log('renderNewsAll - NEWS:', NEWS, 'newsToRender:', newsToRender);
+  console.log('renderNewsAll - NEWS:', newsToRender.length, 'items');
   document.getElementById('news-all').innerHTML = newsToRender.map(n=>newsCard(n,auth())).join('');
   // Zobraz tlačítka podle stavu přihlášení
   const loginBtn = document.getElementById('news-login-btn');
@@ -2603,7 +2617,14 @@ function saveArt() {
   if(!t||!p){alert('Vyplňte název a perex.');return;}
   const a={id:editId||Date.now(),title:t,perex:p,body:document.getElementById('e-body').value,cat:document.getElementById('e-cat').value,date:document.getElementById('e-date').value,author:document.getElementById('e-author').value};
   NEWS=editId?NEWS.map(n=>n.id===editId?a:n):[a,...NEWS];
-  newsSave();closeEditor();renderNewsAll();renderNewsPreview();
+  newsSave();
+  // Uloži do Redis přes API
+  fetch('/api/save-news', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(NEWS)
+  }).catch(e => console.log('API save error:', e));
+  closeEditor();renderNewsAll();renderNewsPreview();
 }
 
 // ═══════════════════════════════════════════════
