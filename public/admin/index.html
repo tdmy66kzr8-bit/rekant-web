@@ -2633,7 +2633,8 @@ function updateCmsBars() {
   if(hint) hint.style.display = a ? 'none' : 'flex';
   const exportBtn = document.getElementById('export-news-btn');
   if(exportBtn) exportBtn.style.display = a ? 'inline-block' : 'none';
-  document.getElementById('add-btn').style.display = a ? 'inline-block' : 'none';  // ← PŘIDEJ TUTO ŘÁDKU
+  const addBtn = document.getElementById('add-btn');
+  if(addBtn) addBtn.style.display = a ? 'inline-block' : 'none';
 }
 
 function renderAll() {
