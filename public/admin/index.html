@@ -518,8 +518,10 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <!-- ══ ROZCESTNÍK STROJŮ ══ -->
 <div id="pg-stroje" style="display:none;padding:56px 20px">
   <div class="inner">
-    <div class="sec-eye">Katalog strojů</div>
-    <h1 class="sec-h">Laserový nebo inkoustový stroj?</h1>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <div><div class="sec-eye">Katalog strojů</div><h1 class="sec-h">Laserový nebo inkoustový stroj?</h1></div>
+      <button onclick="openCms()" class="btn-red" id="catalog-login-btn" style="display:none;white-space:nowrap">🔐 Přihlásit se</button>
+    </div>
     <p class="sec-sub">Pomůžeme vám vybrat správný typ tiskárny pro vaši kancelář. Každá technologie má své výhody.</p>
     <div class="split-grid" style="grid-template-columns:1fr 1fr 1fr">
       <div class="split-card laser" onclick="nav('km')">
@@ -955,21 +957,24 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <div id="pg-used" style="display:none;padding:56px 20px">
   <div class="inner">
     <!-- Intro -->
-    <div style="margin-bottom:36px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <span style="display:inline-block;width:32px;height:3px;background:var(--red)"></span>
-        <span style="font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--red);text-transform:uppercase">Výhodná nabídka</span>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:36px;flex-wrap:wrap">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="display:inline-block;width:32px;height:3px;background:var(--red)"></span>
+          <span style="font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--red);text-transform:uppercase">Výhodná nabídka</span>
+        </div>
+        <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5vw,44px);font-weight:900;color:var(--navy);margin-bottom:16px">Levné použité stroje</h1>
+        <div style="max-width:720px;font-size:15px;color:var(--g600);line-height:1.7">
+          <p style="margin-bottom:10px">Nabízíme stroje z ukončených krátkodobých pronájmů — plně funkční zařízení v dobrém stavu za výrazně nižší cenu než nové. Každý stroj prochází naší servisní kontrolou.</p>
+          <p>Jde o mix různých značek a modelů — tiskárny, multifunkce, kopírky. Zásoby se průběžně mění. Pokud hledáte konkrétní typ, neváhejte nás kontaktovat.</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+          <span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#15803d;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #bbf7d0">✓ Servisně zkontrolováno</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #bfdbfe">✓ Záruka 6 měsíců</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;background:#fff7ed;color:#c2410c;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #fed7aa">✓ Servis zajišťujeme</span>
+        </div>
       </div>
-      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5vw,44px);font-weight:900;color:var(--navy);margin-bottom:16px">Levné použité stroje</h1>
-      <div style="max-width:720px;font-size:15px;color:var(--g600);line-height:1.7">
-        <p style="margin-bottom:10px">Nabízíme stroje z ukončených krátkodobých pronájmů — plně funkční zařízení v dobrém stavu za výrazně nižší cenu než nové. Každý stroj prochází naší servisní kontrolou.</p>
-        <p>Jde o mix různých značek a modelů — tiskárny, multifunkce, kopírky. Zásoby se průběžně mění. Pokud hledáte konkrétní typ, neváhejte nás kontaktovat.</p>
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
-        <span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#15803d;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #bbf7d0">✓ Servisně zkontrolováno</span>
-        <span style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #bfdbfe">✓ Záruka 6 měsíců</span>
-        <span style="display:inline-flex;align-items:center;gap:6px;background:#fff7ed;color:#c2410c;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #fed7aa">✓ Servis zajišťujeme</span>
-      </div>
+      <button onclick="openCms()" class="btn-red" id="used-login-btn" style="display:none;white-space:nowrap;flex-shrink:0">🔐 Přihlásit se</button>
     </div>
 
     <!-- Grid použitých strojů -->
@@ -1810,6 +1815,12 @@ function nav(id, btn) {
   document.querySelectorAll('.nav-btn,.mob-lnk').forEach(b => b.classList.remove('on'));
   if(btn) btn.classList.add('on');
   window.scrollTo(0,0);
+  
+  // Zobraz/skryj přihlašovací tlačítka
+  const catalogBtn = document.getElementById('catalog-login-btn');
+  const usedBtn = document.getElementById('used-login-btn');
+  if(catalogBtn) catalogBtn.style.display = (id === 'stroje' && !auth()) ? 'inline-flex' : 'none';
+  if(usedBtn) usedBtn.style.display = (id === 'used' && !auth()) ? 'inline-flex' : 'none';
 }
 function toggleMob() { document.getElementById('mob-menu').classList.toggle('open'); }
 
