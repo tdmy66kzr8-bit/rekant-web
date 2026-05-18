@@ -520,7 +520,11 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
   <div class="inner">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px">
       <div><div class="sec-eye">Katalog strojů</div><h1 class="sec-h">Laserový nebo inkoustový stroj?</h1></div>
-      <button onclick="openCms()" class="btn-red" id="catalog-login-btn" style="display:none;white-space:nowrap">🔐 Přihlásit se</button>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button onclick="openCms()" class="btn-red" id="catalog-login-btn" style="display:none;white-space:nowrap">🔐 Přihlásit se</button>
+        <button onclick="openMachineEditor(null,'km')" class="btn-red" id="catalog-new-btn" style="display:none;white-space:nowrap">➕ Nový stroj</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="catalog-logout-btn" style="display:none;color:var(--red);border-color:var(--red);white-space:nowrap">🚪 Odhlásit se</button>
+      </div>
     </div>
     <p class="sec-sub">Pomůžeme vám vybrat správný typ tiskárny pro vaši kancelář. Každá technologie má své výhody.</p>
     <div class="split-grid" style="grid-template-columns:1fr 1fr 1fr">
@@ -974,8 +978,11 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
           <span style="display:inline-flex;align-items:center;gap:6px;background:#fff7ed;color:#c2410c;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid #fed7aa">✓ Servis zajišťujeme</span>
         </div>
       </div>
-      <button onclick="openCms()" class="btn-red" id="used-login-btn" style="display:none;white-space:nowrap;flex-shrink:0">🔐 Přihlásit se</button>
-    </div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+        <button onclick="openCms()" class="btn-red" id="used-login-btn" style="display:none;white-space:nowrap">🔐 Přihlásit se</button>
+        <button onclick="openUsedEditor(null)" class="btn-red" id="used-new-btn" style="display:none;white-space:nowrap">➕ Nový stroj</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="used-logout-btn" style="display:none;color:var(--red);border-color:var(--red);white-space:nowrap">🚪 Odhlásit se</button>
+      </div>
 
     <!-- Grid použitých strojů -->
     <div id="used-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px"></div>
@@ -1061,6 +1068,8 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
       <div><div class="sec-eye">Redakce</div><h1 class="sec-h">Aktuality & novinky</h1></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <button onclick="openCms()" class="btn-red" id="news-login-btn" style="display:none">🔐 Přihlásit se</button>
+        <button onclick="openEditor(null)" class="btn-red" id="news-new-btn" style="display:none">✏️ Nová novinка</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="news-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
       </div>
     </div>
     <div class="news-grid" id="news-all"></div>
@@ -1816,11 +1825,20 @@ function nav(id, btn) {
   if(btn) btn.classList.add('on');
   window.scrollTo(0,0);
   
-  // Zobraz/skryj přihlašovací tlačítka
+  // Zobraz/skryj přihlašovací tlačítka a tlačítka akcí
   const catalogBtn = document.getElementById('catalog-login-btn');
   const usedBtn = document.getElementById('used-login-btn');
+  const catalogNewBtn = document.getElementById('catalog-new-btn');
+  const usedNewBtn = document.getElementById('used-new-btn');
+  const catalogLogoutBtn = document.getElementById('catalog-logout-btn');
+  const usedLogoutBtn = document.getElementById('used-logout-btn');
+  
   if(catalogBtn) catalogBtn.style.display = (id === 'stroje' && !auth()) ? 'inline-flex' : 'none';
   if(usedBtn) usedBtn.style.display = (id === 'used' && !auth()) ? 'inline-flex' : 'none';
+  if(catalogNewBtn) catalogNewBtn.style.display = (id === 'stroje' && auth()) ? 'inline-flex' : 'none';
+  if(usedNewBtn) usedNewBtn.style.display = (id === 'used' && auth()) ? 'inline-flex' : 'none';
+  if(catalogLogoutBtn) catalogLogoutBtn.style.display = (id === 'stroje' && auth()) ? 'inline-flex' : 'none';
+  if(usedLogoutBtn) usedLogoutBtn.style.display = (id === 'used' && auth()) ? 'inline-flex' : 'none';
 }
 function toggleMob() { document.getElementById('mob-menu').classList.toggle('open'); }
 
@@ -2278,11 +2296,13 @@ const auth = () => localStorage.getItem('cmsAuth')==='1';
 function renderNewsPreview() { document.getElementById('news-preview').innerHTML = NEWS.slice(0,3).map(n=>newsCard(n,false)).join(''); }
 function renderNewsAll() {
   document.getElementById('news-all').innerHTML = NEWS.map(n=>newsCard(n,auth())).join('');
-  // Zobraz tlačítko Přihlásit se jen když nejsi přihlášen
+  // Zobraz tlačítka podle stavu přihlášení
   const loginBtn = document.getElementById('news-login-btn');
-  if(loginBtn) {
-    loginBtn.style.display = auth() ? 'none' : 'inline-flex';
-  }
+  const newBtn = document.getElementById('news-new-btn');
+  const logoutBtn = document.getElementById('news-logout-btn');
+  if(loginBtn) loginBtn.style.display = auth() ? 'none' : 'inline-flex';
+  if(newBtn) newBtn.style.display = auth() ? 'inline-flex' : 'none';
+  if(logoutBtn) logoutBtn.style.display = auth() ? 'inline-flex' : 'none';
 }
 
 // ─── SECURITY CARDS ───
