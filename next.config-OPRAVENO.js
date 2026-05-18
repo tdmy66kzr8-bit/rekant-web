@@ -1,0 +1,121 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  
+  // Přesměrování na rekant.html a admin cestu
+  // / → /rekant.html (veřejná stránka bez admin prvků)
+  // /admin → /admin/index.html (administrátorská sekce s viditelným UI)
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/admin',
+          destination: '/admin/index.html',
+        },
+        {
+          source: '/',
+          destination: '/rekant.html',
+        },
+      ],
+    };
+  },
+
+  // Bezpečnostní redirecty - blokování starých cest
+  async redirects() {
+    return [
+      // Blokování admin/CMS cest
+      {
+        source: '/component/:path*',
+        destination: '/rekant.html',
+        permanent: true,
+      },
+      {
+        source: '/component/users/:path*',
+        destination: '/rekant.html',
+        permanent: true,
+      },
+      {
+        source: '/administrator/:path*',
+        destination: '/rekant.html',
+        permanent: true,
+      },
+      {
+        source: '/index.php/:path*',
+        destination: '/rekant.html',
+        permanent: true,
+      },
+      // Starý obsah - přesměrování na katalog
+      {
+        source: '/kontakt/:path*',
+        destination: '/rekant.html#kontakt',
+        permanent: true,
+      },
+      {
+        source: '/produkty/:path*',
+        destination: '/rekant.html#katalog',
+        permanent: true,
+      },
+      {
+        source: '/sluzby-servis/:path*',
+        destination: '/rekant.html',
+        permanent: true,
+      },
+      {
+        source: '/reference/:path*',
+        destination: '/rekant.html',
+        permanent: true,
+      },
+    ];
+  },
+
+  // Headers pro SEO a bezpečnost
+  async headers() {
+    return [
+      {
+        source: '/admin/:path*',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache',
+          },
+          {
+            key: 'Expires',
+            value: '0',
+          },
+        ],
+      },
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'POST, GET, OPTIONS',
+          },
+        ],
+      },
+      // SEO meta headers pro hlavní stránku - mírný cache
+      {
+        source: '/rekant.html',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300, s-maxage=300',
+          },
+        ],
+      },
+    ];
+  },
+};
+module.exports = nextConfig;
