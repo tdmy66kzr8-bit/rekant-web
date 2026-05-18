@@ -1055,6 +1055,7 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px">
       <div><div class="sec-eye">Redakce</div><h1 class="sec-h">Aktuality & novinky</h1></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button onclick="openCms()" class="btn-red" id="news-login-btn" style="display:none">🔐 Přihlásit se</button>
       </div>
     </div>
     <div class="news-grid" id="news-all"></div>
@@ -2266,6 +2267,11 @@ const auth = () => localStorage.getItem('cmsAuth')==='1';
 function renderNewsPreview() { document.getElementById('news-preview').innerHTML = NEWS.slice(0,3).map(n=>newsCard(n,false)).join(''); }
 function renderNewsAll() {
   document.getElementById('news-all').innerHTML = NEWS.map(n=>newsCard(n,auth())).join('');
+  // Zobraz tlačítko Přihlásit se jen když nejsi přihlášen
+  const loginBtn = document.getElementById('news-login-btn');
+  if(loginBtn) {
+    loginBtn.style.display = auth() ? 'none' : 'inline-flex';
+  }
 }
 
 // ─── SECURITY CARDS ───
