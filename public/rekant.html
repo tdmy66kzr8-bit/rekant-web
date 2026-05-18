@@ -2696,50 +2696,12 @@ function usedLoad(){try{const s=localStorage.getItem('rekant_used');return s?JSO
 function usedSave(){try{localStorage.setItem('rekant_used',JSON.stringify(USED));}catch(e){}}
 let USED=usedLoad();
 let usedEditId=null;
-let usedLoggedIn=false;
-
-const USED_PASS='Rekant2026!';
-const USED_PIN='4471';  // poslední 4 číslice telefonu
-let usedFailCount=0;
-let usedLockUntil=0;
 
 function openUsedLogin(){
-  const now=Date.now();
-  if(now<usedLockUntil){
-    const secs=Math.ceil((usedLockUntil-now)/1000);
-    alert(`Příliš mnoho neúspěšných pokusů. Zkuste za ${secs} sekund.`);
-    return;
-  }
-  // Krok 1: heslo
-  const p=prompt('Heslo správce (krok 1/2):');
-  if(p===null) return;
-  if(p!==USED_PASS){
-    usedFailCount++;
-    if(usedFailCount>=3){usedLockUntil=Date.now()+60000;usedFailCount=0;alert('Účet dočasně zablokován na 60 sekund.');}
-    else alert(`Nesprávné heslo. (${3-usedFailCount} pokusů zbývá)`);
-    return;
-  }
-  // Krok 2: PIN
-  const pin=prompt('Ověřovací PIN (krok 2/2):');
-  if(pin===null) return;
-  if(pin!==USED_PIN){
-    usedFailCount++;
-    if(usedFailCount>=3){usedLockUntil=Date.now()+60000;usedFailCount=0;alert('Účet dočasně zablokován na 60 sekund.');}
-    else alert(`Nesprávný PIN. (${3-usedFailCount} pokusů zbývá)`);
-    return;
-  }
-  usedFailCount=0;
-  usedLoggedIn=true;
-  document.getElementById('used-login-bar').style.display='none';
-  const ab=document.getElementById('used-admin-bar');
-  ab.style.display='flex';
-  renderUsed();
+  openCms(); // Používá stejný formulář s kontrolním součtem jako články
 }
 function usedLogout(){
-  usedLoggedIn=false;
-  document.getElementById('used-login-bar').style.display='flex';
-  document.getElementById('used-admin-bar').style.display='none';
-  renderUsed();
+  cmsLogout(); // Používá stejné odhlášení jako články
 }
 
 function conditionColor(c){
@@ -2752,7 +2714,7 @@ function conditionColor(c){
 function usedCard(u){
   const img=u.img?`<img src="${u.img}" alt="${u.name}" style="max-height:130px;max-width:80%;object-fit:contain;display:block;margin:0 auto">`
     :`<div style="font-size:48px;text-align:center;line-height:130px">🖨️</div>`;
-  const adminBtns=usedLoggedIn?`<div style="display:flex;gap:6px;margin-top:10px">
+  const adminBtns=auth()?`<div style="display:flex;gap:6px;margin-top:10px">
     <button onclick="openUsedEditor(${u.id})" style="flex:1;padding:7px;font-size:12px;background:#f1f5f9;border:none;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600">✏️ Editovat</button>
     <button onclick="delUsed(${u.id})" style="flex:1;padding:7px;font-size:12px;background:#fef2f2;border:none;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:#dc2626">🗑 Smazat</button>
   </div>`:'';
