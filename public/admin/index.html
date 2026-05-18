@@ -1127,7 +1127,20 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
     </div>
   </div>
 </div>
-
+<!-- ══ NOVINKY ══ -->
+<div id="pg-news" style="display:none;padding:56px 20px">
+  <div class="inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <div><div class="sec-eye">Redakce</div><h1 class="sec-h">Aktuality & novinky</h1></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button onclick="openCms()" class="btn-red" id="news-login-btn" style="display:none">🔐 Přihlásit se</button>
+        <button onclick="openEditor(null)" class="btn-red" id="news-new-btn" style="display:none">✏️ Nová novinka</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="news-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
+      </div>
+    </div>
+    <div class="news-grid" id="news-all"></div>
+  </div>
+</div>
 <!-- ══ KONTAKT / POPTÁVKA ══ -->
 <div id="pg-contact" style="display:none;padding:56px 20px">
   <div class="inner">
