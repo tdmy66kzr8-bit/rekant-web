@@ -81,7 +81,7 @@ export default function AdminKB() {
     try {
       const res = await fetch('/api/kb-manager', {
         method: 'GET',
-        headers: { 'x-admin-token': 'cms-auth' },
+        headers: { 'cms-auth': 'cms-auth' },
       });
       if (res.ok) {
         const data = await res.json();
@@ -105,7 +105,7 @@ export default function AdminKB() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-token': 'cms-auth',
+          'cms-auth': 'cms-auth',
         },
         body: JSON.stringify({ action: 'update-full', kb }),
       });
@@ -228,7 +228,7 @@ export default function AdminKB() {
     try {
       const res = await fetch('/api/kb-scanner', {
         method: 'POST',
-        headers: { 'x-admin-token': 'cms-auth' },
+        headers: { 'cms-auth': 'cms-auth' },
       });
       const data = await res.json();
 
@@ -237,7 +237,7 @@ export default function AdminKB() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-admin-token': 'cms-auth',
+            'cms-auth': 'cms-auth',
           },
           body: JSON.stringify({ action: 'update-full', kb: data.kb }),
         });
@@ -264,7 +264,7 @@ export default function AdminKB() {
     try {
       const res = await fetch('/api/sync-website', {
         method: 'POST',
-        headers: { 'x-admin-token': 'cms-auth' },
+        headers: { 'cms-auth': 'cms-auth' },
       });
       const data = await res.json();
 
