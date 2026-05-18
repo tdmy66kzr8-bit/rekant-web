@@ -572,6 +572,7 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
       <button onclick="nav('stroje')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na výběr strojů</button>
       <div style="display:flex;gap:8px">
+        <button onclick="openCms()" class="btn-red" id="km-login-btn" style="display:none">🔐 Přihlásit se</button>
         <button onclick="openMachineEditor(null,'km')" class="btn-red" id="km-new-btn" style="display:none">➕ Nový stroj</button>
         <button onclick="cmsLogout()" class="btn-outline" id="km-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
       </div>
@@ -599,7 +600,14 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <!-- ══ EPSON KATALOG ══ -->
 <div id="pg-epson" style="display:none;padding:56px 20px">
   <div class="inner">
-    <button onclick="nav('stroje')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na výběr strojů</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <button onclick="nav('stroje')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na výběr strojů</button>
+      <div style="display:flex;gap:8px">
+        <button onclick="openCms()" class="btn-red" id="epson-login-btn" style="display:none">🔐 Přihlásit se</button>
+        <button onclick="openMachineEditor(null,'epson')" class="btn-red" id="epson-new-btn" style="display:none">➕ Nový stroj</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="epson-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
+      </div>
+    </div>
     
     <img id="ep-page-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Epson">
     <h1 class="sec-h">Tiskárny & multifunkce Epson</h1>
@@ -611,6 +619,14 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <!-- ══ BROTHER KATALOG ══ -->
 <div id="pg-brother" style="display:none;padding:56px 20px">
   <div class="inner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <button onclick="nav('stroje')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na výběr strojů</button>
+      <div style="display:flex;gap:8px">
+        <button onclick="openCms()" class="btn-red" id="brother-login-btn" style="display:none">🔐 Přihlásit se</button>
+        <button onclick="openMachineEditor(null,'brother')" class="btn-red" id="brother-new-btn" style="display:none">➕ Nový stroj</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="brother-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
+      </div>
+    </div>
     
     <img id="br-page-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Brother">
     <h1 class="sec-h">Tiskárny & multifunkce Brother</h1>
@@ -622,6 +638,14 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <!-- ══ CANON KATALOG ══ -->
 <div id="pg-canon" style="display:none;padding:56px 20px">
   <div class="inner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <button onclick="nav('stroje')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na výběr strojů</button>
+      <div style="display:flex;gap:8px">
+        <button onclick="openCms()" class="btn-red" id="canon-login-btn" style="display:none">🔐 Přihlásit se</button>
+        <button onclick="openMachineEditor(null,'canon')" class="btn-red" id="canon-new-btn" style="display:none">➕ Nový stroj</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="canon-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
+      </div>
+    </div>
     
     <img id="can-page-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Canon">
     <h1 class="sec-h">Tiskárny & multifunkce Canon</h1>
@@ -633,6 +657,14 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <!-- ══ DEVELOP KATALOG ══ -->
 <div id="pg-develop" style="display:none;padding:56px 20px">
   <div class="inner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <button onclick="nav('stroje')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na výběr strojů</button>
+      <div style="display:flex;gap:8px">
+        <button onclick="openCms()" class="btn-red" id="develop-login-btn" style="display:none">🔐 Přihlásit se</button>
+        <button onclick="openMachineEditor(null,'develop')" class="btn-red" id="develop-new-btn" style="display:none">➕ Nový stroj</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="develop-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
+      </div>
+    </div>
     
     <img id="dev-page-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Develop">
     <h1 class="sec-h">Multifunkce Develop</h1>
@@ -658,7 +690,13 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <!-- ══ JABLOTRON DETAIL ══ -->
 <div id="pg-jablotron" style="display:none;padding:56px 20px">
   <div class="inner">
-    <button onclick="nav('security')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na zabezpečení</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <button onclick="nav('security')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na zabezpečení</button>
+      <div style="display:flex;gap:8px">
+        <button onclick="openCms()" class="btn-red" id="jablotron-login-btn" style="display:none">🔐 Přihlásit se</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="jablotron-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
+      </div>
+    </div>
     <img id="jab-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Jablotron">
     <h1 class="sec-h">Alarmové systémy Jablotron 100+</h1>
     <p class="sec-sub" style="margin-bottom:32px">Jako certifikovaný instalátor systémů Jablotron 100+ nabízíme komplexní služby od bezplatné konzultace přes projekt a instalaci až po pravidelný servis a monitoring. Každé řešení navrhujeme přesně podle potřeb konkrétního objektu.</p>
@@ -761,7 +799,13 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <!-- ══ DAHUA DETAIL ══ -->
 <div id="pg-dahua" style="display:none;padding:56px 20px">
   <div class="inner">
-    <button onclick="nav('security')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na zabezpečení</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <button onclick="nav('security')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na zabezpečení</button>
+      <div style="display:flex;gap:8px">
+        <button onclick="openCms()" class="btn-red" id="dahua-login-btn" style="display:none">🔐 Přihlásit se</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="dahua-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
+      </div>
+    </div>
     <img id="dah-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Dahua">
     <h1 class="sec-h">Kamerové systémy Dahua CCTV</h1>
     <p class="sec-sub" style="margin-bottom:32px">Dahua Technology je jedním z největších světových výrobců IP kamerových systémů. Jako autorizovaný partner instalujeme kompletní řešení od jednotlivých kamer přes NVR záznamy až po sofistikované AI analýzy obrazu — vše s pravidelným servisem a zárukou.</p>
@@ -861,7 +905,13 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <!-- ══ HIKVISION DETAIL ══ -->
 <div id="pg-hikvision" style="display:none;padding:56px 20px">
   <div class="inner">
-    <button onclick="nav('security')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na zabezpečení</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <button onclick="nav('security')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na zabezpečení</button>
+      <div style="display:flex;gap:8px">
+        <button onclick="openCms()" class="btn-red" id="hikvision-login-btn" style="display:none">🔐 Přihlásit se</button>
+        <button onclick="cmsLogout()" class="btn-outline" id="hikvision-logout-btn" style="display:none;color:var(--red);border-color:var(--red)">🚪 Odhlásit se</button>
+      </div>
+    </div>
     <img id="hik-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Hikvision">
     <h1 class="sec-h">Kamerové systémy Hikvision</h1>
     <p class="sec-sub" style="margin-bottom:32px">Hikvision je světový lídr v oblasti IP kamerových systémů s více než 20 lety zkušeností. Jako autorizovaný partner instalujeme kompletní kamerová řešení pro objekty všech velikostí — od rodinných domů po průmyslové areály.</p>
@@ -1826,28 +1876,51 @@ function nav(id, btn) {
   if(btn) btn.classList.add('on');
   window.scrollTo(0,0);
   
-  // Zobraz/skryj přihlašovací tlačítka a tlačítka akcí
+  // RERENDER když se přepneme na sekci (aby se zobrazila data + tlačítka)
+  if(id === 'news') renderNewsAll();
+  if(id === 'used') renderUsed();
+  if(id === 'km') renderKmAll();
+  if(id === 'epson') renderEpAll();
+  if(id === 'brother') renderBrAll();
+  if(id === 'canon') renderCanAll();
+  if(id === 'develop') renderDevAll();
+  
+  // Zobraz/skryj NOVINKY tlačítka
+  const newsLoginBtn = document.getElementById('news-login-btn');
+  const newsNewBtn = document.getElementById('news-new-btn');
+  const newsLogoutBtn = document.getElementById('news-logout-btn');
+  if(id === 'news') {
+    if(newsLoginBtn) newsLoginBtn.style.display = auth() ? 'none' : 'inline-flex';
+    if(newsNewBtn) newsNewBtn.style.display = auth() ? 'inline-flex' : 'none';
+    if(newsLogoutBtn) newsLogoutBtn.style.display = auth() ? 'inline-flex' : 'none';
+  }
+  
+  // Zobraz/skryj KATALOG tlačítka
   const catalogBtn = document.getElementById('catalog-login-btn');
-  const usedBtn = document.getElementById('used-login-btn');
   const catalogNewBtn = document.getElementById('catalog-new-btn');
-  const usedNewBtn = document.getElementById('used-new-btn');
   const catalogLogoutBtn = document.getElementById('catalog-logout-btn');
-  const usedLogoutBtn = document.getElementById('used-logout-btn');
-  
-  // Tlačítka pro jednotlivé značky (km, epson, atd.)
-  const brandNewBtn = document.getElementById(id + '-new-btn');
-  const brandLogoutBtn = document.getElementById(id + '-logout-btn');
-  
   if(catalogBtn) catalogBtn.style.display = (id === 'stroje' && !auth()) ? 'inline-flex' : 'none';
-  if(usedBtn) usedBtn.style.display = (id === 'used' && !auth()) ? 'inline-flex' : 'none';
   if(catalogNewBtn) catalogNewBtn.style.display = (id === 'stroje' && auth()) ? 'inline-flex' : 'none';
-  if(usedNewBtn) usedNewBtn.style.display = (id === 'used' && auth()) ? 'inline-flex' : 'none';
   if(catalogLogoutBtn) catalogLogoutBtn.style.display = (id === 'stroje' && auth()) ? 'inline-flex' : 'none';
+  
+  // Zobraz/skryj POUŽITÉ STROJE tlačítka
+  const usedBtn = document.getElementById('used-login-btn');
+  const usedNewBtn = document.getElementById('used-new-btn');
+  const usedLogoutBtn = document.getElementById('used-logout-btn');
+  if(usedBtn) usedBtn.style.display = (id === 'used' && !auth()) ? 'inline-flex' : 'none';
+  if(usedNewBtn) usedNewBtn.style.display = (id === 'used' && auth()) ? 'inline-flex' : 'none';
   if(usedLogoutBtn) usedLogoutBtn.style.display = (id === 'used' && auth()) ? 'inline-flex' : 'none';
   
-  // Tlačítka pro jednotlivé značky
-  if(brandNewBtn) brandNewBtn.style.display = (['km','epson','brother','canon','develop','jablotron','dahua','hikvision'].includes(id) && auth()) ? 'inline-flex' : 'none';
-  if(brandLogoutBtn) brandLogoutBtn.style.display = (['km','epson','brother','canon','develop','jablotron','dahua','hikvision'].includes(id) && auth()) ? 'inline-flex' : 'none';
+  // Tlačítka pro jednotlivé značky (km, epson, brother, atd.)
+  const brandNewBtn = document.getElementById(id + '-new-btn');
+  const brandLogoutBtn = document.getElementById(id + '-logout-btn');
+  const brandLoginBtn = document.getElementById(id + '-login-btn');
+  const brands = ['km','epson','brother','canon','develop','jablotron','dahua','hikvision'];
+  if(brands.includes(id)) {
+    if(brandLoginBtn) brandLoginBtn.style.display = auth() ? 'none' : 'inline-flex';
+    if(brandNewBtn) brandNewBtn.style.display = auth() ? 'inline-flex' : 'none';
+    if(brandLogoutBtn) brandLogoutBtn.style.display = auth() ? 'inline-flex' : 'none';
+  }
 }
 function toggleMob() { document.getElementById('mob-menu').classList.toggle('open'); }
 
@@ -2533,6 +2606,8 @@ function cmsLogout() {
   localStorage.removeItem('cmsAuth');
   updateCmsBars();
   renderAll();
+  // Auto-refresh aby se tlačítka aktualizovala bez F5
+  setTimeout(() => window.location.reload(), 300);
 }
 
 function updateCmsBars() {
@@ -2943,4 +3018,3 @@ function addChatMessage(role, text) {
 </script>
 </body>
 </html>
-
