@@ -960,7 +960,7 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
         <span style="display:inline-block;width:32px;height:3px;background:var(--red)"></span>
         <span style="font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--red);text-transform:uppercase">Výhodná nabídka</span>
       </div>
-      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5vw,44px);font-weight:900;color:var(--navy);margin-bottom:16px">Repasované, krátkodobě použité stroje</h1>
+      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5vw,44px);font-weight:900;color:var(--navy);margin-bottom:16px">Levné, repasované použité stroje</h1>
       <div style="max-width:720px;font-size:15px;color:var(--g600);line-height:1.7">
         <p style="margin-bottom:10px">Nabízíme stroje z ukončených krátkodobých pronájmů — plně funkční zařízení v dobrém stavu za výrazně nižší cenu než nové. Každý stroj prochází naší servisní kontrolou.</p>
         <p>Jde o mix různých značek a modelů — tiskárny, multifunkce, kopírky. Zásoby se průběžně mění. Pokud hledáte konkrétní typ, neváhejte nás kontaktovat.</p>
@@ -1775,9 +1775,9 @@ document.addEventListener("DOMContentLoaded", function() {
   ['hik-logo'].forEach(id => { const e=document.getElementById(id); if(e) e.src=L.hikvision; });
   const cam = document.getElementById('hc-cam'); if(cam) cam.src=L.dahuaCam;
 
-  // Načti data ze serveru (JSON soubory) — přepíší localStorage pokud existují
+  // Načti data ze serveru (API endpoints nebo JSON soubory) — přepíší localStorage pokud existují
   Promise.allSettled([
-    fetch('/data/news.json').then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch('/api/get-news').then(r=>r.ok?r.json():null).catch(()=>fetch('/data/news.json').then(r=>r.ok?r.json():null).catch(()=>null)),
     fetch('/data/used-machines.json').then(r=>r.ok?r.json():null).catch(()=>null),
   ]).then(([newsRes, usedRes]) => {
     if(newsRes.value && Array.isArray(newsRes.value)){
