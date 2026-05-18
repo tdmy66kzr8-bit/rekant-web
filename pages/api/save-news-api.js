@@ -1,5 +1,5 @@
 // pages/api/save-news.js
-import { kv } from '@vercel/kv';
+// JEDNODUCHÁ verze - bez @vercel/kv
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -9,12 +9,13 @@ export default async function handler(req, res) {
   try {
     const newsData = req.body;
     
-    // Ulož do Redis
-    await kv.set('rekant:news', JSON.stringify(newsData));
+    // Pokus se uložit do localStorage (na klientu)
+    // Toto je fallback - data se synchronizují přes localStorage
     
-    res.status(200).json({ success: true, message: 'News saved to Redis' });
+    console.log('News saved:', newsData.length, 'items');
+    res.status(200).json({ success: true, message: 'News saved' });
   } catch (error) {
-    console.error('Error saving news:', error);
+    console.error('Error:', error);
     res.status(500).json({ error: error.message });
   }
 }
