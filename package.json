@@ -1,0 +1,21 @@
+{
+  "name": "rekant-web",
+  "version": "1.0.0",
+  "description": "REKANT s.r.o. professional website",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "next": "^14.0.0",
+    "@vercel/kv": "^1.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0"
+  }
+}
