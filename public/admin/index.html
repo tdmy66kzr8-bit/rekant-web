@@ -1843,7 +1843,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Načti data ze serveru (API endpoints nebo JSON soubory) — přepíší localStorage pokud existují
   Promise.allSettled([
-    fetch('/api/get-news').then(r=>r.ok?r.json():null).catch(()=>fetch('/data/news.json').then(r=>r.ok?r.json():null).catch(()=>null)),
+    fetch('/api/get-news').then(r=>r.ok?r.json():null).catch(()=>fetch('/api/get-news').then(r=>r.ok?r.json():null).catch(()=>null)),
     fetch('/data/used-machines.json').then(r=>r.ok?r.json():null).catch(()=>null),
   ]).then(([newsRes, usedRes]) => {
     if(newsRes.value && Array.isArray(newsRes.value)){
@@ -2389,7 +2389,7 @@ function renderNewsPreview() { document.getElementById('news-preview').innerHTML
 function renderNewsAll() {
   // Fallback: pokud NEWS je prázdný, zkusit načíst z /data/news.json znovu
   if(!NEWS || NEWS.length === 0) {
-    fetch('/data/news.json').then(r=>r.json()).then(data=>{
+    fetch('/api/get-news').then(r=>r.json()).then(data=>{
       if(Array.isArray(data)) {
         NEWS = data;
         newsSave(); // Ulož do localStorage jako backup
