@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -7,7 +6,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="REKANT s.r.o. - profesionální prodej a servis kancelářské techniky (Konica Minolta, Brother, Canon), bezpečnostních systémů (Jablotron, Dahua, Hikvision) a docházkových řešení v Praze.">
+<meta name="description" content="Rekant s.r.o. zajišťuje servis, prodej a pronájem kancelářské techniky, multifunkčních tiskáren, zabezpečovací systémy Jablotron, kamerové systémy Dahua a slaboproudé instalace v Praze a okolí.">
 <meta name="keywords" content="kancelářská technika, kopírka, tiskárna, bezpečnostní systém, dohledový systém, docházkový systém, servis, Praha">
 <meta name="author" content="REKANT s.r.o.">
 <meta name="robots" content="index, follow">
@@ -19,7 +18,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="REKANT s.r.o.">
 <meta name="twitter:description" content="Profesionální prodej a servis kancelářské techniky, bezpečnostních a docházkových systémů.">
-<link rel="canonical" href="https://rekant.cz/">
+<link rel="canonical" href="https://www.rekant.cz/">
 <title>REKANT s.r.o. [ADMIN] | Kancelářská technika · Zabezpečení · Praha</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -253,16 +252,6 @@ footer{background:var(--navy);color:rgba(255,255,255,.7);padding:52px 20px 24px}
 .fab:hover{background:var(--rd);transform:scale(1.08)}
 .fab-dot{position:absolute;top:-2px;right:-2px;width:15px;height:15px;background:#22c55e;border-radius:50%;border:2.5px solid #fff;font-size:9px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
 
-
-/* CMS STROJE */
-.cms-bar{background:var(--rl);border:1.5px solid rgba(204,26,26,.25);border-radius:10px;padding:12px 18px;margin-bottom:24px;display:none;align-items:center;gap:12px;flex-wrap:wrap}
-.cms-bar.visible{display:flex}
-.cms-bar-txt{font-size:13.5px;font-weight:600;color:var(--red);flex:1}
-.pcard-cms-btns{display:flex;gap:6px;padding:0 16px 13px;justify-content:flex-end}
-.pcard-edit-btn{background:none;border:1px solid var(--bl);border-radius:6px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--g600);cursor:pointer;font-family:var(--font);transition:all .15s}
-.pcard-edit-btn:hover{border-color:var(--red);color:var(--red)}
-.pcard-del-btn{background:none;border:1px solid #fecaca;border-radius:6px;padding:5px 11px;font-size:12px;font-weight:600;color:#dc2626;cursor:pointer;font-family:var(--font);transition:all .15s}
-.pcard-del-btn:hover{background:#fef2f2}
 
 /* EDITOR STROJŮ */
 .machine-editor{background:#fff;border-radius:16px;padding:28px 24px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;margin-top:8px}
@@ -581,13 +570,6 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
   <div class="inner">
     <button onclick="nav('stroje')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na výběr strojů</button>
     
-    <!-- CMS lišta správce -->
-    <div class="cms-bar" id="km-cms-bar">
-      <span style="font-size:20px">🛠️</span>
-      <span class="cms-bar-txt">Režim správce — můžete přidávat, editovat a mazat stroje</span>
-      <button onclick="openMachineEditor(null,'km')" class="btn-red" style="font-size:13px;padding:8px 16px">➕ Přidat stroj KM</button>
-      <button onclick="cmsLogout()" style="background:none;border:1px solid var(--bl);padding:7px 13px;border-radius:6px;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer;font-family:var(--font)">Odhlásit</button>
-    </div>
     <img id="km-page-logo" style="height:40px;width:auto;margin-bottom:16px;display:block" alt="Konica Minolta">
     <h1 class="sec-h">Multifunkce & tiskárny bizhub</h1>
     <p class="sec-sub" style="margin-bottom:22px">Nejnovější řada bizhub i-Series — prodej, pronájem, servis. <span style="color:var(--red);font-weight:600">Záruka 24–48 měsíců, servis do 24 pracovních hodin.</span></p>
@@ -612,13 +594,6 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
   <div class="inner">
     <button onclick="nav('stroje')" style="background:none;border:none;color:var(--red);font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;gap:5px;padding:0;font-family:var(--font)">← Zpět na výběr strojů</button>
     
-    <!-- CMS lišta správce -->
-    <div class="cms-bar" id="ep-cms-bar">
-      <span style="font-size:20px">🛠️</span>
-      <span class="cms-bar-txt">Režim správce — můžete přidávat, editovat a mazat stroje</span>
-      <button onclick="openMachineEditor(null,'ep')" class="btn-red" style="font-size:13px;padding:8px 16px">➕ Přidat stroj Epson</button>
-      <button onclick="cmsLogout()" style="background:none;border:1px solid var(--bl);padding:7px 13px;border-radius:6px;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer;font-family:var(--font)">Odhlásit</button>
-    </div>
     <img id="ep-page-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Epson">
     <h1 class="sec-h">Tiskárny & multifunkce Epson</h1>
     <p class="sec-sub" style="margin-bottom:28px">WorkForce Pro & EcoTank — inkoustová alternativa s nižšími náklady. <span style="color:var(--red);font-weight:600">Záruka až 5 let (EcoTank).</span></p>
@@ -630,13 +605,6 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <div id="pg-brother" style="display:none;padding:56px 20px">
   <div class="inner">
     
-    <!-- CMS lišta správce -->
-    <div class="cms-bar" id="br-cms-bar">
-      <span style="font-size:20px">🛠️</span>
-      <span class="cms-bar-txt">Režim správce — můžete přidávat, editovat a mazat stroje</span>
-      <button onclick="openMachineEditor(null,'br')" class="btn-red" style="font-size:13px;padding:8px 16px">➕ Přidat stroj Brother</button>
-      <button onclick="cmsLogout()" style="background:none;border:1px solid var(--bl);padding:7px 13px;border-radius:6px;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer;font-family:var(--font)">Odhlásit</button>
-    </div>
     <img id="br-page-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Brother">
     <h1 class="sec-h">Tiskárny & multifunkce Brother</h1>
     <p class="sec-sub" style="margin-bottom:28px">Spolehlivé laserové a inkoustové tiskárny pro kanceláře všech velikostí.</p>
@@ -648,13 +616,6 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <div id="pg-canon" style="display:none;padding:56px 20px">
   <div class="inner">
     
-    <!-- CMS lišta správce -->
-    <div class="cms-bar" id="can-cms-bar">
-      <span style="font-size:20px">🛠️</span>
-      <span class="cms-bar-txt">Režim správce — můžete přidávat, editovat a mazat stroje</span>
-      <button onclick="openMachineEditor(null,'can')" class="btn-red" style="font-size:13px;padding:8px 16px">➕ Přidat stroj Canon</button>
-      <button onclick="cmsLogout()" style="background:none;border:1px solid var(--bl);padding:7px 13px;border-radius:6px;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer;font-family:var(--font)">Odhlásit</button>
-    </div>
     <img id="can-page-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Canon">
     <h1 class="sec-h">Tiskárny & multifunkce Canon</h1>
     <p class="sec-sub" style="margin-bottom:28px">Canon imageRUNNER a PIXMA řada — profesionální tisk pro každou kancelář.</p>
@@ -666,13 +627,6 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
 <div id="pg-develop" style="display:none;padding:56px 20px">
   <div class="inner">
     
-    <!-- CMS lišta správce -->
-    <div class="cms-bar" id="dev-cms-bar">
-      <span style="font-size:20px">🛠️</span>
-      <span class="cms-bar-txt">Režim správce — můžete přidávat, editovat a mazat stroje</span>
-      <button onclick="openMachineEditor(null,'dev')" class="btn-red" style="font-size:13px;padding:8px 16px">➕ Přidat stroj Develop</button>
-      <button onclick="cmsLogout()" style="background:none;border:1px solid var(--bl);padding:7px 13px;border-radius:6px;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer;font-family:var(--font)">Odhlásit</button>
-    </div>
     <img id="dev-page-logo" style="height:36px;width:auto;margin-bottom:16px;display:block" alt="Develop">
     <h1 class="sec-h">Multifunkce Develop</h1>
     <p class="sec-sub" style="margin-bottom:28px">Řada ineo — robustní kancelářské multifunkce pro náročné prostředí.</p>
@@ -1018,16 +972,6 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
       </div>
     </div>
 
-    <!-- Admin bar (viditelný po přihlášení) -->
-    <div id="used-admin-bar" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px 20px;margin-bottom:28px;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-      <span style="font-size:13.5px;color:#92400e;font-weight:600">🔓 Režim správce — správa použitých strojů</span>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button onclick="openUsedEditor(null)" class="btn-primary" style="padding:8px 18px;font-size:13px">+ Přidat stroj</button>
-        <button onclick="exportUsedJSON()" style="padding:8px 18px;font-size:13px;background:#fff;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:var(--navy)">⬇ Export JSON</button>
-        <button onclick="usedLogout()" style="padding:8px 18px;font-size:13px;background:#fff;border:1px solid #d1d5db;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:var(--g600)">Odhlásit</button>
-      </div>
-    </div>
-
     <!-- Grid použitých strojů -->
     <div id="used-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px"></div>
     <div id="used-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--g400)">
@@ -1037,12 +981,7 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
       <button onclick="nav('contact')" class="btn-primary" style="margin-top:20px">Kontaktovat nás</button>
     </div>
 
-    <!-- Přihlásit se (správce) — nenápadně dole -->
-    <div id="used-login-bar" style="margin-top:40px;padding:18px 22px;background:var(--g50);border:1px solid var(--bl);border-radius:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <span style="font-size:22px">🔐</span>
-      <div style="flex:1"><div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:2px">Jste správce webu?</div><div style="font-size:13px;color:var(--g600)">Přihlaste se pro správu nabídky použitých strojů.</div></div>
-      <button onclick="openUsedLogin()" class="btn-red">Přihlásit se</button>
-    </div>
+      
   </div>
 </div>
 
@@ -1116,15 +1055,9 @@ const P={"km-c3321i":"/img/machines/km-c3321i.png","km-c257i":"data:image/svg+xm
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px">
       <div><div class="sec-eye">Redakce</div><h1 class="sec-h">Aktuality & novinky</h1></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <button onclick="exportNewsJSON()" id="export-news-btn" style="display:none;padding:8px 16px;font-size:13px;background:#fff;border:1px solid var(--bl);border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:var(--navy)">⬇ Export JSON</button>
-        <button onclick="openCms()" class="btn-red" id="add-btn" >✏️ Přidat článek</button>
       </div>
     </div>
     <div class="news-grid" id="news-all"></div>
-    <div id="cms-hint" style="margin-top:28px;padding:18px 22px;background:var(--g50);border:1px solid var(--bl);border-radius:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <span style="font-size:22px">🔐</span>
-      <div style="flex:1"><div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:2px">Jste správce webu?</div><div style="font-size:13px;color:var(--g600)">Přihlaste se pro přidávání a editaci článků.</div></div>
-      <button onclick="openCms()" class="btn-red" >Přihlásit se</button>
     </div>
   </div>
 </div>
@@ -2333,8 +2266,6 @@ const auth = () => localStorage.getItem('cmsAuth')==='1';
 function renderNewsPreview() { document.getElementById('news-preview').innerHTML = NEWS.slice(0,3).map(n=>newsCard(n,false)).join(''); }
 function renderNewsAll() {
   document.getElementById('news-all').innerHTML = NEWS.map(n=>newsCard(n,auth())).join('');
-  document.getElementById('cms-hint').style.display = auth()?'none':'flex';
-  document.getElementById('add-btn').textContent = auth()?'✏️ Přidat článek':'🔐 Přidat článek';
 }
 
 // ─── SECURITY CARDS ───
@@ -2764,50 +2695,12 @@ function usedLoad(){try{const s=localStorage.getItem('rekant_used');return s?JSO
 function usedSave(){try{localStorage.setItem('rekant_used',JSON.stringify(USED));}catch(e){}}
 let USED=usedLoad();
 let usedEditId=null;
-let usedLoggedIn=false;
-
-const USED_PASS='Rekant2026!';
-const USED_PIN='4471';  // poslední 4 číslice telefonu
-let usedFailCount=0;
-let usedLockUntil=0;
 
 function openUsedLogin(){
-  const now=Date.now();
-  if(now<usedLockUntil){
-    const secs=Math.ceil((usedLockUntil-now)/1000);
-    alert(`Příliš mnoho neúspěšných pokusů. Zkuste za ${secs} sekund.`);
-    return;
-  }
-  // Krok 1: heslo
-  const p=prompt('Heslo správce (krok 1/2):');
-  if(p===null) return;
-  if(p!==USED_PASS){
-    usedFailCount++;
-    if(usedFailCount>=3){usedLockUntil=Date.now()+60000;usedFailCount=0;alert('Účet dočasně zablokován na 60 sekund.');}
-    else alert(`Nesprávné heslo. (${3-usedFailCount} pokusů zbývá)`);
-    return;
-  }
-  // Krok 2: PIN
-  const pin=prompt('Ověřovací PIN (krok 2/2):');
-  if(pin===null) return;
-  if(pin!==USED_PIN){
-    usedFailCount++;
-    if(usedFailCount>=3){usedLockUntil=Date.now()+60000;usedFailCount=0;alert('Účet dočasně zablokován na 60 sekund.');}
-    else alert(`Nesprávný PIN. (${3-usedFailCount} pokusů zbývá)`);
-    return;
-  }
-  usedFailCount=0;
-  usedLoggedIn=true;
-  document.getElementById('used-login-bar').style.display='none';
-  const ab=document.getElementById('used-admin-bar');
-  ab.style.display='flex';
-  renderUsed();
+  openCms(); // Používá stejný formulář s kontrolním součtem jako články
 }
 function usedLogout(){
-  usedLoggedIn=false;
-  document.getElementById('used-login-bar').style.display='flex';
-  document.getElementById('used-admin-bar').style.display='none';
-  renderUsed();
+  cmsLogout(); // Používá stejné odhlášení jako články
 }
 
 function conditionColor(c){
@@ -2820,7 +2713,7 @@ function conditionColor(c){
 function usedCard(u){
   const img=u.img?`<img src="${u.img}" alt="${u.name}" style="max-height:130px;max-width:80%;object-fit:contain;display:block;margin:0 auto">`
     :`<div style="font-size:48px;text-align:center;line-height:130px">🖨️</div>`;
-  const adminBtns=usedLoggedIn?`<div style="display:flex;gap:6px;margin-top:10px">
+  const adminBtns=auth()?`<div style="display:flex;gap:6px;margin-top:10px">
     <button onclick="openUsedEditor(${u.id})" style="flex:1;padding:7px;font-size:12px;background:#f1f5f9;border:none;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600">✏️ Editovat</button>
     <button onclick="delUsed(${u.id})" style="flex:1;padding:7px;font-size:12px;background:#fef2f2;border:none;border-radius:6px;cursor:pointer;font-family:var(--font);font-weight:600;color:#dc2626">🗑 Smazat</button>
   </div>`:'';
