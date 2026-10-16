@@ -2381,6 +2381,7 @@ async function submitF(btn, formId) {
     msg: getData('textarea'),
     interest: getData('select') || '',
     product: document.getElementById('mfp-product-inp')?.value || '',
+    type: formId || '',
   };
 
   // Odešleme na API
